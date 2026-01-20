@@ -3,7 +3,7 @@ import json, os, csv
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.secret_key = 'ShilpySecret123!'
 
 DATA_DIR = "data"
 DATA_FILE = os.path.join(DATA_DIR, "users.json")
