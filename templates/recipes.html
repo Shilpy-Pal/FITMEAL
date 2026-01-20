@@ -1,0 +1,356 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitMeal Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(120deg, #f0fff4, #d1fae5);
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+    }
+    
+    /* 🔥 BIG ANIMATED FILTER BUTTONS - BMI Style 🔥 */
+    .filter-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .btn-filter {
+      position: relative;
+      overflow: hidden;
+      padding: 14px 32px !important;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(90deg, #972b89c7, #d38945, #152e7e, #a8e637);
+      background-size: 300% 300%;
+      color: #fff;
+      animation: navbarFlow 3s ease infinite;
+      box-shadow: 0 6px 20px rgba(151, 43, 137, 0.4);
+      transition: all 0.4s ease;
+      min-width: 130px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+    .btn-filter:hover {
+      transform: scale(1.1) translateY(-3px);
+      box-shadow: 0 10px 30px rgba(168, 230, 55, 0.7);
+      background-color: #ebee4c81 !important;
+      animation-play-state: paused;
+    }
+    .btn-filter.active {
+      background: linear-gradient(90deg, #ebee4c, #ff930f) !important;
+      box-shadow: 0 8px 25px rgba(235, 238, 76, 0.6);
+      transform: scale(1.05);
+    }
+
+    /* MEAL SLOT BUTTONS - Same Style */
+    .meal-slot-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 25px 0;
+    }
+    
+    
+
+         #Brandname {
+  font-size: 2.8rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, #972b89c7, #d38945, #152e7e, #a8e637);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: navbarFlow 3s ease infinite;
+  text-shadow: 
+    3px 4px 7px rgba(241, 241, 219, 0.8),
+    
+  filter: drop-shadow(0 0 10 rgba(0,0,0,0.3));
+}
+    @keyframes navbarFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .navbar-nav .nav-link:hover {
+      background-color: #ecf01e81;
+      color: #fff;
+      transform: scale(1.1);
+      border: 2px solid white;
+      box-shadow: 0 4px 15px rgba(25, 135, 84, 0.6);
+      transition: all 0.3s ease;
+    }
+    .navbar .btn:hover {
+      background-color: #ebee4c;
+      color: #fff;
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(25, 135, 84, 0.6);
+      transition: all 0.3s ease;
+    }
+    .navbar-brand img {
+      width: 150px;
+      height: 130px;
+      border-radius: 35%;
+      margin-right: 10px;
+      background: linear-gradient(90deg, #00b09b, #96c93d, #00d4aa, #a8e637);
+      background-size: 300% 300%;
+      animation: navbarFlow 3s ease infinite;
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+      -webkit-mask-image: linear-gradient(#fff 0 0);
+      mask-image: linear-gradient(#fff 0 0);
+      transform-origin: center;
+      transition: transform 0.3s ease;
+    }
+        .navbar-brand img:hover {
+   transform: perspective(300px) rotateY(10deg) scale(1.1);
+}
+    .generate-btn {
+      background: linear-gradient(90deg, #28a745, #20c997) !important;
+      border: 2px groove rgba(245, 232, 94, 0.918) !important;
+      padding: 15px 40px !important;
+      font-size: 1.2rem !important;
+      font-weight: 700 !important;
+      border-radius: 30px !important;
+      box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4) !important;
+      transition: all 0.3s ease !important;
+      min-width: 180px;
+      color:#f7f6e6;
+          animation: generate 3s ease infinite;
+
+    }
+    @keyframes generate {
+  0% { background-position: 0% 50%; 
+      transform: scale(1);
+  }
+  50% { background-position: 100% 50%;
+         transform: scale(1.08); 
+  }
+  100% { background-position: 0% 50%; 
+         transform: scale(1); 
+  }
+}
+    .generate-btn:hover {
+      transform: scale(1.08) translateY(-1px) !important;
+      box-shadow: 0 12px 35px rgba(40, 167, 69, 0.6) !important;
+    background-color: #ebee4c81 !important;
+    color: #fff;
+    }
+.generate-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.18rem rgba(25, 135, 84, 0.5);
+}
+
+    .meal-card {
+      overflow: hidden; border-radius: 16px;
+      box-shadow: 0 6px 22px rgba(76,81,109,0.14);
+      background: white; margin-bottom: 28px;
+      max-width: 465px; min-height: 425px;
+      margin-left: auto; margin-right: auto;
+      animation: cardFadeIn 0.7s cubic-bezier(.22,.75,.40,1.13) forwards;
+    }
+    @keyframes cardFadeIn { to { opacity: 1; transform: translateY(0) scale(1);} }
+    .meal-image { width: 100%; height: 185px; object-fit: cover; border-radius: 8px 8px 0 0; }
+    .meal-title { font-size: 1.12rem; font-weight: 600; margin-bottom: 4px; color: #323866;}
+    .badge-primary {background: #6c63ff;}
+    footer { text-align:center; padding:30px 0; color:#555; font-size:0.9rem;}
+
+    @media (max-width: 768px) {
+      .btn-filter, .btn-meal-slot { padding: 12px 20px !important; min-width: 100px; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm sticky-top" style="background: linear-gradient(90deg, #00b09b, #96c93d);">
+    <div class="container py-2">
+      <a class="navbar-brand d-flex align-items-center text-white fw-bold" href="/home" style="font-size: 1.8rem; letter-spacing: 1px;">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" style="width:150px;height:130px;border-radius:35%;margin-right:10px;">
+      </a>
+      <span id="Brandname">FitMeal</span>
+      <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/home">Home</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/preferences">Preferences</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/recipes">Recipes</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold active" href="/mealplan">Meal Plan</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/report">Report</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/about">About</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/contact">Contact</a></li>
+          <li class="nav-item ms-3">
+            <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-5">
+    <h4 class="mb-3 text-center" style="font-weight:700;">Generate Your Meal Plan</h4>
+    
+    <!-- 🔥 DIET FILTER BUTTONS 🔥 -->
+    <div class="filter-buttons">
+      <button class="btn-filter active" data-filter="All" onclick="setDiet('All')">ALL</button>
+      <button class="btn-filter" data-filter="Vegetarian" onclick="setDiet('Vegetarian')">VEG</button>
+      <button class="btn-filter" data-filter="Non-Vegetarian" onclick="setDiet('Non-Vegetarian')">NON-VEG</button>
+      <button class="btn-filter" data-filter="Vegan" onclick="setDiet('Vegan')">VEGAN</button>
+      <button class="btn-filter" data-filter="Keto" onclick="setDiet('Keto')">KETO</button>
+    </div>
+
+    <!-- 🔥 MEAL SLOT BUTTONS 🔥 -->
+    <div class="meal-slot-buttons">
+      <button class="btn-meal-slot active" data-slot="Breakfast" onclick="setMeal('Breakfast')">BREAKFAST</button>
+      <button class="btn-meal-slot" data-slot="Morning Snack" onclick="setMeal('Morning Snack')">MORNING SNACK</button>
+      <button class="btn-meal-slot" data-slot="Lunch" onclick="setMeal('Lunch')">LUNCH</button>
+      <button class="btn-meal-slot" data-slot="Evening Snack" onclick="setMeal('Evening Snack')">EVENING SNACK</button>
+      <button class="btn-meal-slot" data-slot="Dinner" onclick="setMeal('Dinner')">DINNER</button>
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <button class="btn btn-success fw-bold generate-btn" onclick="generateMealPlan()">GENERATE PLAN</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <h5 class="text-center mb-3 fw-bold" id="planTitle"></h5>
+    <div id="meal-plan-section" class="row g-4 justify-content-center"></div>
+  </div>
+
+  <!-- SEE RECIPES BUTTON -->
+  <div class="d-flex justify-content-center mb-5">
+    <button id="seeRecipesBtn" class="btn btn-lg btn-success fw-bold px-5 py-2 shadow-sm generate-btn" style="display:none;">SEE RECIPES</button>
+  </div>
+
+  <footer>
+    &copy; 2025 FitMeal. All Rights Reserved.
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let allRecipes = [];
+    let dietFilter = 'All';
+    let mealSlot = 'Breakfast';
+    let planData = {};
+
+    // Load all recipes from backend CSV via API
+    async function fetchRecipes() {
+      const res = await fetch('/api/recipes');
+      allRecipes = await res.json();
+      setDiet('All');
+      setMeal('Breakfast');
+      populateCustomDropdowns();
+    }
+
+    // Set diet type/filters - UPDATED with new button style
+    function setDiet(type) {
+      dietFilter = type;
+      document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.btn-filter[data-filter="${type}"]`).classList.add('active');
+      populateCustomDropdowns();
+    }
+
+    // Highlight meal slot - UPDATED with new button style
+    function setMeal(slot) {
+      mealSlot = slot;
+      document.querySelectorAll('.btn-meal-slot').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.btn-meal-slot[data-slot="${slot}"]`).classList.add('active');
+    }
+
+    // Main: Generate meal plan
+    function generateMealPlan() {
+      planData = {};
+      let slots = ['Breakfast','Morning Snack','Lunch','Evening Snack','Dinner'];
+      slots.forEach(slot => {
+        let typeKey = slot.toLowerCase().includes('snack') ? 'snacks' : slot.toLowerCase();
+        let recipes = allRecipes.filter(r =>
+          (r.type && r.type.toLowerCase() === typeKey) &&
+          (dietFilter==='All' || (r.dietary && r.dietary.toLowerCase() === dietFilter.toLowerCase()))
+        );
+        if (!recipes.length) {
+          recipes = allRecipes.filter(r =>
+            r.type && r.type.toLowerCase() === typeKey
+          );
+        }
+        if (!recipes.length) return;
+        planData[slot] = recipes[Math.floor(Math.random()*recipes.length)];
+      });
+      showMealPlan();
+      document.getElementById('planTitle').innerText =
+        `Your ${dietFilter==='All'?'':dietFilter+' '}Meal Plan (${Object.keys(planData).length} meals)`;
+      document.getElementById('seeRecipesBtn').style.display = 'inline-block';
+    }
+
+    function showMealPlan() {
+      let html = '';
+      ['Breakfast','Morning Snack','Lunch','Evening Snack','Dinner'].forEach(slot=>{
+        let meal = planData[slot];
+        html += `<div class="col-md-6 col-lg-3 mb-3">
+          <div class="meal-card">
+            <h6 class="text-center pt-3 pb-1 mb-0" style="font-weight:700;">${slot}</h6>
+            ${meal ? `
+            <img src="${meal.image}" alt="${meal.name}" class="meal-image"/>
+            <div class="p-3">
+              <div class="meal-title mb-1">${meal.name}</div>
+              <span class="badge badge-primary mb-1">${meal.dietary || meal.type || "-"}</span>
+              <div><strong>Calories:</strong> ${meal.calories || '-'} kcal</div>
+              <div><strong>Protein:</strong> ${meal.protein || '-'} g</div>
+              <div><strong>Carbs:</strong> ${meal.carbs || '-'} g</div>
+              <div><strong>Fat:</strong> ${meal.fat || '-'} g</div>
+              <div><strong>Portion:</strong> ${meal.portion || '-'}</div>
+              <button class="btn btn-outline-success btn-sm mt-2" onclick="changeMealSlot('${slot}')">Change</button>
+            </div>
+            ` : `<p class="text-center text-muted py-4">🍽️ No ${slot} suggestion available.</p>`}
+          </div>
+        </div>`;
+      });
+      document.getElementById('meal-plan-section').innerHTML = html;
+    }
+
+    // Slot changing for alternatives
+    function changeMealSlot(slot) {
+      let typeKey = slot.toLowerCase().includes('snack') ? 'snacks' : slot.toLowerCase();
+      let recipes = allRecipes.filter(r =>
+        (r.type && r.type.toLowerCase() === typeKey) &&
+        (dietFilter==='All' || (r.dietary && r.dietary.toLowerCase() === dietFilter.toLowerCase()))
+      );
+      if (!recipes.length) {
+        recipes = allRecipes.filter(r =>
+          r.type && r.type.toLowerCase() === typeKey
+        );
+      }
+      if (!recipes.length) return;
+      planData[slot] = recipes[Math.floor(Math.random()*recipes.length)];
+      showMealPlan();
+    }
+
+    function populateCustomDropdowns() {
+      // Only if you have dropdowns in the form, otherwise ignore
+    }
+
+    function savePlanAndGo() {
+      localStorage.setItem('mealPlanRecipes', JSON.stringify(planData));
+      window.location.href = '/mealplan';
+    }
+
+    // Attach onclick only after DOM loaded
+    window.onload = function() {
+      fetchRecipes();
+      document.getElementById('seeRecipesBtn').onclick = savePlanAndGo;
+    }
+  </script>
+</body>
+</html>

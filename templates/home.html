@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitMeal Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(120deg, #f0fff4, #d1fae5);
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+    }
+        #Brandname {
+  font-size: 2.8rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, #972b89c7, #d38945, #152e7e, #a8e637);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: navbarFlow 3s ease infinite;
+  text-shadow: 
+    3px 4px 7px rgba(241, 241, 219, 0.8),
+    
+  filter: drop-shadow(0 0 10 rgba(0,0,0,0.3));
+}
+    @keyframes navbarFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .navbar-nav .nav-link:hover {
+      background-color: #ecf01e81;
+      color: #fff;
+      transform: scale(1.1);
+      border: 2px solid white;
+      box-shadow: 0 4px 15px rgba(25, 135, 84, 0.6);
+      transition: all 0.3s ease;
+    }
+    .navbar .btn:hover {
+      background-color: #ebee4c;
+      color: #fff;
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(25, 135, 84, 0.6);
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-brand img {
+      width: 150px;
+      height: 130px;
+      border-radius: 35%;
+      margin-right: 10px;
+      background: linear-gradient(90deg, #00b09b, #96c93d, #00d4aa, #a8e637);
+      background-size: 300% 300%;
+      animation: navbarFlow 3s ease infinite;
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+      -webkit-mask-image: linear-gradient(#fff 0 0);
+      mask-image: linear-gradient(#fff 0 0);
+      transform-origin:center;
+      transition:transform 0.3s ease;
+    }
+    .navbar-brand img:hover {
+   transform: perspective(300px) rotateY(10deg) scale(1.1);
+}
+  .title {
+  text-shadow: 2px 2px 4px black;
+  font-size: 2.5rem;
+  font-weight: 600;
+  position: relative;
+  animation-name: move;
+  animation-iteration-count: infinite;
+  animation-duration: 10s;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+  animation-play-state: running;
+  animation-fill-mode: forwards;
+  color: rgb(212, 201, 51);
+}
+@keyframes move {
+  from {
+    top: 0;
+    left: 0;
+  }
+  to {
+    top: 0;
+    left: 100%;
+  }
+}  
+.title-container {
+  background-image: linear-gradient(
+    to right,
+    rgba(0, 0, 255, 0.4),
+    rgba(144, 140, 148, 0.5),
+    rgba(137, 196, 230, 0.815)
+  );
+}
+
+    .hero-section {
+      position: relative;
+      height: 75vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      border-bottom-left-radius: 80px;
+      border-bottom-right-radius: 80px;
+      background: linear-gradient(135deg, #20c997 0%, #0dcaf0 53%, #ffdf7e 100%);
+    }
+    .hero-section img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.58;
+      filter: brightness(83%);
+    }
+    .hero-content {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      z-index: 2;
+    }
+    .hero-content h1, .hero-content p {
+      color: #fff;
+      text-shadow: 0 2px 18px rgba(0,0,0,0.65);
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+    .hero-content p {
+      font-size: 1.3rem;
+      font-weight: 500;
+    }
+    .hero-content .btn {
+      padding: 13px 32px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      border-radius: 12px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.14);
+    }
+
+    .feature-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      text-align: center;
+      transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+    }
+    .feature-card img {
+      width: 80px; margin-bottom: 15px; transition: transform 0.5s;
+    }
+    .feature-card:hover img { transform: scale(1.2); }
+    .feature-card h5 { color: #2c3e50; margin-bottom:10px;}
+    .feature-card p { color: #555; font-size:0.95rem;}
+
+    .recipe-section {
+      background: #e6f4ea;
+      padding: 60px 0;
+    }
+    .recipe-section h2 {
+      text-align: center;
+      font-weight: 800;
+      margin-bottom: 40px;
+      color: #0b3d1e;
+    }
+    .recipe-card {
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .recipe-card img { width: 100%; height:200px; object-fit: cover; transition: scale 0.4s;}
+    .recipe-card:hover { transform: translateY(-8px); box-shadow:0 12px 40px rgba(0,0,0,0.15);}
+    .recipe-card:hover img { transform: scale(1.1);}
+    .recipe-card-body { padding: 15px; text-align: center;}
+    .recipe-card-body h5 { font-weight:700;}
+    .recipe-card-body p { font-size:0.9rem; color:#555;}
+
+    footer { text-align:center; padding:30px 0; color:#555; font-size:0.9rem;}
+
+    @keyframes fadeIn {
+      0% {opacity:0; transform: translateY(20px);}
+      100% {opacity:1; transform: translateY(0);}
+    }
+
+    /* slide animation for popular recipes */
+.slide-out-left {
+  animation: slideOutLeft 0.4s forwards;
+}
+.slide-in-right {
+  animation: slideInRight 0.4s forwards;
+}
+
+@keyframes slideOutLeft {
+  0% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(-50px); opacity: 0; }
+}
+@keyframes slideInRight {
+  0% { transform: translateX(50px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg shadow-sm sticky-top"
+       style="background: linear-gradient(90deg, #00b09b, #96c93d);">
+    <div class="container py-2">
+      <a class="navbar-brand d-flex align-items-center text-white fw-bold"
+         href="/home" style="font-size: 1.8rem; letter-spacing: 1px;">
+        <img src="{{ url_for('static', filename='images/logo.png') }}"
+             style="letter-spacing: 1px;">
+      </a>
+            <span id="Brandname">FitMeal</span>
+      <button class="navbar-toggler border-0 text-white" type="button"
+              data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/home">Home</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/preferences">Preferences</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/recipes">Recipes</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold active" href="/mealplan">Meal Plan</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/report">Report</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/about">About</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/contact">Contact</a></li>
+          <li class="nav-item ms-3">
+            <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+ <div class="title-container">
+        <h2 class="title">🙏🏻Welcome to the fitmeal</h2>
+       </div>
+  <section class="hero-section">
+    <img src="{{ url_for('static', filename='images/healthy-meal.jpg') }}">
+    <div class="hero-content">
+      <h1>Fuel Your Body, Fuel Your Life</h1>
+      <p>Healthy Meals. Balanced Nutrition. Fit You!</p>
+      <a href="/preferences" class="btn btn-warning">Get Started</a>
+    </div>
+  </section>
+
+  <div class="container my-5">
+    <div class="row text-center">
+      <div class="col-md-3 mb-4">
+       <a href="/preferences"> 
+       <div class="feature-card">
+          <img src="{{ url_for('static', filename='images/balanceddiet.jpg') }}">
+          <h5 class="fw-bold">Balanced Nutrition</h5>
+          <p>Get all essential nutrients in perfect portions.</p>
+        </div>
+        </a>
+      </div>
+      <div class="col-md-3 mb-4">
+        <a href="/recipes">
+        <div class="feature-card">
+          <img src="{{ url_for('static', filename='images/fitnessrecipes.jpg') }}">
+          <h5 class="fw-bold">Fitness Recipes</h5>
+          <p>Delicious meals designed for your fitness goals.</p>
+        </div>
+        </a>
+      </div>
+      <div class="col-md-3 mb-4">
+       <a href="/mealplan">
+        <div class="feature-card">
+          <img src="{{ url_for('static', filename='images/meal-plan.jpg') }}">
+          <h5 class="fw-bold">Daily Meal Plans</h5>
+          <p>Personalized meal plans for every day.</p>
+        </div>
+        </a>
+      </div>
+      <div class="col-md-3 mb-4">
+       <a href="/report">
+        <div class="feature-card">
+          <img src="{{ url_for('static', filename='images/activity tracker.jpg') }}">
+          <h5 class="fw-bold">Activity Tracker</h5>
+          <p>Monitor your workouts, steps, and calories.</p>
+        </div>
+      </a>
+      </div>
+    </div>
+  </div>
+
+<section class="recipe-section">
+  <div class="container position-relative">
+    <h2>Popular Recipes</h2>
+
+    <!-- Popular recipes row -->
+    <div class="row g-4 overflow-hidden" id="recipes-container">
+      <!-- Dynamic cards -->
+    </div>
+
+    <!-- NEXT button (right side middle) -->
+    <button id="next-recipes-btn"
+            class="btn btn-light shadow rounded-circle d-flex align-items-center justify-content-center"
+            style="position:absolute; top:50%; right:-10px; transform:translateY(-50%); width:48px; height:48px; border:2px solid #1c7c54;">
+      ▶
+    </button>
+  </div>
+</section>
+
+
+  <footer>
+    &copy; 2025 FitMeal. All Rights Reserved.
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const heroImg = document.querySelector('.hero-section img');
+  if (heroImg) heroImg.style.transform = "scale(1.05)";
+
+  let allRecipes = [];
+  let currentIndex = 0; // starting index for slicing
+
+  document.addEventListener("DOMContentLoaded", function() {
+    fetch("/api/recipes")
+      .then(response => response.json())
+      .then(data => {
+        allRecipes = data;
+        renderPopular(); // first set
+      })
+      .catch(err => console.error("Error loading recipes:", err));
+
+    document.getElementById('next-recipes-btn').addEventListener('click', showNextRecipes);
+  });
+
+  function renderPopular(recipes) {
+    const container = document.getElementById("recipes-container");
+    const list = recipes || allRecipes.slice(0, 3);
+
+    container.innerHTML = "";
+    list.forEach(recipe => {
+      const desc = `${recipe.calories} kcal | ${recipe.type} | ${recipe.prep_time}`;
+      container.innerHTML += `
+        <div class="col-md-4">
+          <div class="recipe-card">
+            <img src="${recipe.image}" alt="${recipe.name}">
+            <div class="recipe-card-body">
+              <h5>${recipe.name}</h5>
+              <p>${desc}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function showNextRecipes() {
+    if (!allRecipes.length) return;
+    const container = document.getElementById("recipes-container");
+
+    // slide out
+    container.classList.remove('slide-in-right');
+    container.classList.add('slide-out-left');
+
+    setTimeout(() => {
+      // update index for next 3 items (wrap around)
+      currentIndex = (currentIndex + 3) % allRecipes.length;
+
+      const nextThree = [];
+      for (let i = 0; i < 3; i++) {
+        nextThree.push(allRecipes[(currentIndex + i) % allRecipes.length]);
+      }
+
+      renderPopular(nextThree);
+
+      // slide in
+      container.classList.remove('slide-out-left');
+      container.classList.add('slide-in-right');
+
+      setTimeout(() => {
+        container.classList.remove('slide-in-right');
+      }, 400);
+    }, 350); // match slide-out duration
+  }
+</script>
+
+</body>
+</html>
+
+
+

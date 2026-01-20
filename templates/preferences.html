@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FitMeal | Preferences</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+          body { background: linear-gradient(120deg, #f0fff4, hsl(149, 80%, 90%)); font-family: 'Poppins', sans-serif; }
+          .form-section { background:#fff; border-radius:15px; box-shadow:0 4px 25px rgba(0,0,0,0.1); padding:40px 35px; max-width:720px; margin:100px auto; transition:0.3s ease;}
+          .form-section h3 { color:#198754; font-weight:600; margin-bottom:25px; text-align:center; }
+          .btn-primary { background-color:#198754; border:none; padding:10px 25px; font-weight:500; border-radius:8px; }
+          .btn-primary:hover { background-color:#157347; }
+          #result { color:#157347; font-weight:500; margin-top:15px; text-align:center; }
+          .cal-box{
+        background:white; padding:12px; border-radius:10px;
+        box-shadow:0 2px 10px rgba(0,0,0,0.1); font-size:1.3rem; font-weight:600; color:#1b5e20;
+      }
+
+      /* BRAND NAME */
+      #Brandname {
+  font-size: 2.8rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, #972b89c7, #d38945, #152e7e, #a8e637);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: navbarFlow 3s ease infinite;
+  text-shadow: 
+    3px 4px 7px rgba(241, 241, 219, 0.8),
+    
+  filter: drop-shadow(0 0 10 rgba(0,0,0,0.3));
+}
+
+@keyframes navbarFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.navbar-nav .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.35); /* thoda zyada opaque */
+  color: #00b09b; /* matching teal color text */
+  font-weight: 600;
+  border-radius: 5px;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 176, 155, 0.4);
+  transition: all 0.3s ease;
+}
+
+.navbar .btn:hover {
+  background-color: #ebee4c;
+  color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(25, 135, 84, 0.6);
+  transition: all 0.3s ease;
+}
+      .navbar-nav .nav-link:hover {
+        background-color:#ecf01e81;
+        color: #fff;
+         transform: scale(1.1);
+         border: 2px solid white;
+         box-shadow: 0 4px 15px rgba(25, 135, 84, 0.6);
+         transition: all 0.3s ease;
+        }
+       
+      #convertmeasure{
+        color:#f7f6e6;
+        background-image: linear-gradient(rgba(105, 105, 209, 0.521) ,rgba(230, 157, 169, 0.918) ,rgba(128, 0, 128, 0.5));
+        border:4px groove rgba(245, 232, 94, 0.918);
+        border-radius: 8px;
+        box-shadow: 8px 10px 10px  rgba(226, 190, 28, 0.849);
+        display:flex;
+        justify-content: center;
+        
+      } 
+      .form-control{
+         border: 2px solid #f3cbc3;
+        }
+.form-control:focus {
+  border-color: #b76e79;;
+  box-shadow: 0 0 0 0.2rem rgba(183, 110, 121, 0.35);
+  outline: none;
+}
+   .navbar-brand img:hover {
+   transform: perspective(300px) rotateY(10deg) scale(1.1);
+}
+.navbar-brand img {
+  width: 150px;
+  height: 130px;
+  border-radius: 35%;
+  margin-right: 10px;
+  background: linear-gradient(90deg, #00b09b, #96c93d, #00d4aa, #a8e637);
+  background-size: 300% 300%;
+  animation: navbarFlow 3s ease infinite;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+  -webkit-mask-image: linear-gradient(#fff 0 0); /* for WebKit to apply background clip */
+  mask-image: linear-gradient(#fff 0 0);
+  transform-origin:center;
+  transition:transform 0.3s ease;
+}
+
+/* Use the same keyframes */
+@keyframes navbarFlow {
+  0% { background-position: 0% 50%; 
+      transform: scale(1);
+  }
+  50% { background-position: 100% 50%;
+         transform: scale(1.08); 
+  }
+  100% { background-position: 0% 50%; 
+         transform: scale(1); 
+  }
+}
+/*new line added*/
+  .btn-outline-success {
+  position: relative;
+  background: linear-gradient(90deg, #972b89c7, #d38945, #152e7e, #a8e637);
+  background-size: 300% 300%;
+  color: #fff;
+  border: none !important;
+  animation: navbarFlow 3s ease infinite;
+  box-shadow: 0 4px 12px rgba(21, 115, 71, 0.4);
+  transition: all 0.3s ease;
+}
+
+.btn-outline-success:hover {
+  background-color: #ebee4c81 !important;
+  transform: scale(1.08) translateY(-1px);
+  box-shadow: 0 6px 18px rgba(25, 135, 84, 0.7);
+  color: #fff;
+}
+
+.btn-outline-success:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.18rem rgba(25, 135, 84, 0.5);
+}
+   
+    </style>
+  </head>
+  <body>
+    <!-- 🔥 ORIGINAL NAVBAR (UNCHANGED) -->
+   <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm sticky-top"
+    style="background: linear-gradient(90deg, #00b09b, #96c93d);">
+    <div class="container py-2">
+      <a class="navbar-brand d-flex align-items-center text-white fw-bold"
+         href="/home" style="font-size: 1.8rem; letter-spacing: 1px;">
+        <img src="{{ url_for('static', filename='images/logo.png') }}"
+           style="letter-spacing: 1px;"  >
+          </a>
+          <span id="Brandname">FitMeal</span>
+      <button class="navbar-toggler border-0 text-white" type="button"
+      data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/home">Home</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/preferences">Preferences</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/recipes">Recipes</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold active" href="/mealplan">Meal Plan</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/report">Report</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/about">About</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/contact">Contact</a></li>
+          <li class="nav-item ms-3">
+            <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+    <div class="form-section">
+      <h3>Set Your Health Preferences</h3>
+      <h4 id="convertmeasure">1 Feet equals to 30.42cm and 1 Inch equals to 2.54cm</h4>
+      <form id="preferencesForm" method="post" action="/preferences">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="age">Age (years)</label>
+            <input
+              type="number"
+              class="form-control"
+              id="age"
+              name="age"
+              min="0"
+              max="90"
+              required
+            />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="height">Height (cm)</label>
+            <input
+              type="number"
+              class="form-control"
+              id="height"
+              name="height"
+              min="120"
+              max="210"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="weight">Weight (kg)</label>
+            <input
+              type="number"
+              class="form-control"
+              id="weight"
+              name="weight"
+              min="25"
+              max="140"
+              required
+            />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="gender">Gender</label>
+            <select class="form-select" id="gender" name="gender" required>
+              <option value="">-- Select --</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="waist">Waist (cm)</label>
+            <input type="number" class="form-control" min="40"  max="170" id="waist" name="waist" />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label>Chest (cm)</label>
+            <input type="number" class="form-control" id="chest" min="60"
+            max="150" name="chest" />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="hips">Hips (cm)</label>
+            <input type="number" class="form-control" id="hips" min="70" max="150" name="hips" />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="diet">Diet Type</label>
+          <select class="form-select" id="diet" name="diet" required>
+            <option value="">-- Select --</option>
+            <option>Vegetarian</option>
+            <option>Non-Vegetarian</option>
+            <option>Vegan</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="goal">Goal</label>
+          <select class="form-select" id="goal" name="goal" required>
+            <option value="">-- Select --</option>
+            <option>Lose Weight</option>
+            <option>Maintain Weight</option>
+            <option>Gain Weight</option>
+            <option>Build Muscle</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="activity">Activity Level</label>
+          <select class="form-select" id="activity" name="activity" required>
+            <option value="">-- Select --</option>
+            <option value="1.2">Sedentary</option>
+            <option value="1.375">Lightly active</option>
+            <option value="1.55">Moderately active</option>
+            <option value="1.725">Very active</option>
+            <option value="1.9">Extra active</option>
+          </select>
+        </div>
+
+        <div class="text-center mt-4">
+          <button
+            type="button"
+            class="btn btn-outline-success me-3"
+            onclick="calculateBMI()"
+          >
+            Calculate BMI & Calories
+          </button>
+          <button type="submit" class="btn btn-primary">Next</button>
+          <h5 id="result"></h5>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      function calculateBMI() {
+        let h = parseFloat(document.getElementById("height").value);
+        let w = parseFloat(document.getElementById("weight").value);
+        let age = parseInt(document.getElementById("age").value);
+        let gender = document.getElementById("gender").value;
+        let activity = parseFloat(document.getElementById("activity").value);
+
+        if (!h || !w || !age || !gender || !activity) {
+          alert("Please fill all required fields to calculate!");
+          return;
+        }
+
+        let bmi = (w / (h / 100) ** 2).toFixed(2);
+        let status =
+          bmi < 18.5
+            ? "Underweight"
+            : bmi < 25
+            ? "Normal"
+            : bmi < 30
+            ? "Overweight"
+            : "Obese";
+        let goal=document.getElementById("goal").value;
+
+        let bmr =
+          gender === "Male"
+            ? 10 * w + 6.25 * h - 5 * age + 5
+            : gender === "Female"
+            ? 10 * w + 6.25 * h - 5 * age - 161
+            : 10 * w + 6.25 * h - 5 * age;
+
+        let calories;
+        if(goal==="Lose Weight"){
+          calories=Math.round(bmr*activity-500); // 500 kcal deficit for weight loss
+        }
+        else if(goal==="Gain Weight"){
+          calories=Math.round(bmr*activity+500);
+        }
+        else if(goal==="Build Muscle") {
+          calories=Math.round(bmr*activity+250);
+        }
+        else{
+          calories=Math.round(bmr*activity);
+        }
+
+        document.getElementById(
+          "result"
+        ).innerHTML = `BMI: <b>${bmi}</b> (${status})<br>Recommended Calories: <b>${calories}</b> kcal`;
+      }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

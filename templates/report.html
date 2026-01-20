@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Progress Report - FitMeal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    body {
+      background: linear-gradient(120deg, #eaffee 0, #d1fafe 100%);
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .report-hero {
+      background: linear-gradient(90deg, #5dc9e6 30%, #b8ffe1 100%);
+      border-radius: 34px;
+      box-shadow: 0 7px 44px #19dba726, 0 2px 12px #86f7de35;
+      text-align: center;
+      padding: 46px 20px 38px 20px;
+      margin: 34px auto 42px auto;
+      position:relative;
+      overflow:hidden;
+    }
+    .report-title {
+      font-size: 2.5rem; font-weight: 800;
+      letter-spacing: 1.5px;
+      color: transparent;
+      background: linear-gradient(90deg,#21c16b 10%, #3379ff 68%);
+      background-clip:text; -webkit-background-clip:text;
+    }
+    .report-hero-slogan {
+      font-weight: 700; color: #3b4855;
+      font-size: 1.1rem;
+      margin: 0 auto 9px auto;
+      max-width: 780px;
+    }
+    .report-cards-row { margin-top: 15px; }
+
+    .report-card {
+      border-radius: 20px;
+      background: linear-gradient(105deg,#fff 80%,#bafff1 100%);
+      box-shadow: 0 12px 36px #65ffd82b;
+      min-height: 195px;
+      transition: box-shadow .46s cubic-bezier(.29,.78,.32,1), transform .36s;
+      border:none;
+      padding: 27px 22px 17px 22px;
+      text-align: center;
+      margin-bottom: 16px;
+      overflow: hidden;
+      opacity: 0; transform: translateY(40px) scale(.97);
+      animation: cardPopFadeIn 1.25s forwards;
+      animation-delay: var(--fade-delay, 0s);
+    }
+    @keyframes cardPopFadeIn {
+      to { opacity: 1; transform: translateY(0) scale(1);}
+    }
+    .report-card .rc-icon {
+      font-size:2.3rem;
+      margin-bottom: 8px;
+      color: #20c997;
+      transition: color 0.4s, transform 0.4s;
+    }
+    .report-card:hover .rc-icon {
+      color: #2972e7;
+      transform: scale(1.15) rotate(-8deg);
+    }
+    .rc-label {font-size: 1.05rem; font-weight:700;}
+    .rc-value {font-size: 1.45rem; font-weight:800; letter-spacing:1.2px; color: #1b6d4f;}
+    .rc-subtext {font-size:.9rem;color:#4d6d63;}
+
+    .progress, .progress-bar {
+      transition: width 1.5s cubic-bezier(.26,1.09,.36,.88);
+      height:1.07rem;
+      border-radius: 22px;
+      box-shadow:0 2px 6px #52ffc448;
+    }
+
+    .badge-achievement {
+      background: linear-gradient(95deg,#ffd694 40%,#fffd8b 99%);
+      color: #7c6604;
+      font-weight: 700;
+      font-size: 1.05rem;
+      border-radius: 18px;
+      box-shadow: 0 7px 20px #fff07b2a;
+      margin:0 7px 9px 7px;
+      padding: 9px 20px;
+      display: inline-block;
+      animation: popBadge .85s cubic-bezier(.26,1.09,.36,.88) backwards;
+    }
+    @keyframes popBadge {
+      0% { transform: scale(0.4) rotate(-10deg); opacity: 0;}
+      76%{opacity:1}
+      100% { transform: scale(1) rotate(3deg);}
+    }
+
+    .report-table th, .report-table td { 
+      text-align: center; font-size: 1.0rem; vertical-align: middle;
+      background:rgba(217,255,239,0.42);
+      border-bottom: 1.4px solid #eff6f2;
+    }
+    .report-table th {
+      background: linear-gradient(96deg,#29e7b0 25%,#c7fff1 100%);
+      color: #06473a; font-size:1.05rem;
+      letter-spacing:.4px; font-weight: 700;
+    }
+    .report-section-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      color: #269c6a;
+      margin: 30px 0 18px 0;
+      text-align:center;
+    }
+
+    /* BRAND NAME */
+        #Brandname {
+  font-size: 2.8rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, #972b89c7, #d38945, #152e7e, #a8e637);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: navbarFlow 3s ease infinite;
+  text-shadow: 
+    3px 4px 7px rgba(241, 241, 219, 0.8),
+    
+  filter: drop-shadow(0 0 10 rgba(0,0,0,0.3));
+}
+    @keyframes navbarFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .navbar-nav .nav-link:hover {
+      background-color: #ecf01e81;
+      color: #fff;
+      transform: scale(1.1);
+      border: 2px solid white;
+      box-shadow: 0 4px 15px rgba(25, 135, 84, 0.6);
+      transition: all 0.3s ease;
+    }
+    .navbar .btn:hover {
+      background-color: #ebee4c;
+      color: #fff;
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(25, 135, 84, 0.6);
+      transition: all 0.3s ease;
+    }
+    .navbar-brand img {
+      width: 150px;
+      height: 130px;
+      border-radius: 35%;
+      margin-right: 10px;
+      background: linear-gradient(90deg, #00b09b, #96c93d, #00d4aa, #a8e637);
+      background-size: 300% 300%;
+      animation: navbarFlow 3s ease infinite;
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+      -webkit-mask-image: linear-gradient(#fff 0 0);
+      mask-image: linear-gradient(#fff 0 0);
+      transform-origin: center;
+      transition: transform 0.3s ease;
+    }
+       .navbar-brand img:hover {
+   transform: perspective(300px) rotateY(10deg) scale(1.1);
+}
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm sticky-top"
+       style="background: linear-gradient(90deg, #00b09b, #96c93d);">
+    <div class="container py-2">
+      <a class="navbar-brand d-flex align-items-center text-white fw-bold"
+         href="/home" style="font-size: 1.8rem; letter-spacing: 1px;">
+        <img src="{{ url_for('static', filename='images/logo.png') }}"
+             style="width:150px;height:130px;border-radius:35%;margin-right:10px;">
+            </a>
+            <span id="Brandname">FitMeal</span>
+      <button class="navbar-toggler border-0 text-white" type="button"
+              data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/home">Home</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/preferences">Preferences</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/recipes">Recipes</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/mealplan">Meal Plan</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold active" href="/report">Report</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/about">About</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/contact">Contact</a></li>
+          <li class="nav-item ms-3">
+            <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- REPORT HERO SUMMARY -->
+  <div class="container">
+    <div class="report-hero mt-3">
+      <div class="report-title mb-2">Your Progress Report</div>
+      <div class="report-hero-slogan">
+        Track how consistently you’re following your plan and how close you are to your goal.
+      </div>
+      <!-- Achievement Badges (animated) -->
+      <div class="my-2">
+        <span class="badge-achievement"><i class="bi bi-graph-up-arrow"></i> On Track Streak</span>
+        <span class="badge-achievement"><i class="bi bi-fire"></i> Smart Calorie Control</span>
+        <span class="badge-achievement"><i class="bi bi-heart-pulse-fill"></i> Stronger Every Week</span>
+      </div>
+    </div>
+
+    <!-- Measurement Update Card -->
+    <div class="report-form-card mt-3 mb-4">
+      <div class="report-section-title mb-3">Update Today’s Measurements</div>
+      <form id="progressForm" class="row g-3 justify-content-center">
+        <div class="col-md-2">
+          <label class="form-label">Current Weight (kg)</label>
+          <input type="number" step="0.1" min="20" max="200" class="form-control" id="currentWeightInput" required>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Waist (cm)</label>
+          <input type="number" step="0.1" min="40" max="200" class="form-control" id="waistInput">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Chest (cm)</label>
+          <input type="number" step="0.1" min="40" max="200" class="form-control" id="chestInput">
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button type="submit" class="btn btn-success w-100">
+            Save & Refresh Graph
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- SUMMARY METRIC CARDS -->
+    <div class="row report-cards-row gx-4 gy-4 justify-content-center">
+      <div class="col-md-4">
+        <div class="report-card" style="--fade-delay: .10s;">
+          <div class="rc-icon"><i class="bi bi-calendar-check"></i></div>
+          <div class="rc-label">Days Following Plan</div>
+          <div class="rc-value" id="daysValue">-- days</div>
+          <div class="rc-subtext">Consistency towards your goal.</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="report-card" style="--fade-delay:.22s;">
+          <div class="rc-icon"><i class="bi bi-tape"></i></div>
+          <div class="rc-label">Body Progress</div>
+          <div class="rc-value" id="bodySummary">-- kg</div>
+          <div class="rc-subtext" id="bodyDetail">Waist -- cm · Chest -- cm</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="report-card" style="--fade-delay:.34s;">
+          <div class="rc-icon"><i class="bi bi-bullseye"></i></div>
+          <div class="rc-label">Goal Progress (Today)</div>
+          <div class="rc-value" id="goalPercent">-- %</div>
+          <div class="progress mt-3 mb-1" style="height:1.2rem;">
+            <div id="goalBar" class="progress-bar bg-success" style="width:0%;" role="progressbar"></div>
+          </div>
+          <div class="rc-subtext" id="goalText"></div>
+        </div>
+      </div>
+    </div>
+
+
+  <div class="container mb-5">
+    <div class="report-section-title">Weight Progress</div>
+    <div class="report-form-card">
+    <canvas id="weightChart" height="120"></canvas>
+    </div>
+  </div>
+
+<script>
+ const dates = {{ dates | tojson | safe }};
+const weights = {{ weights | tojson | safe }};
+
+
+  const ctx = document.getElementById('weightChart').getContext('2d');
+  const weightChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [{
+        label: 'Weight (kg)',
+        data: weights,
+        borderColor: '#20c997',
+        backgroundColor: 'rgba(32, 201, 151, 0.1)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Date'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Weight (kg)'
+          },
+          beginAtZero: false
+        }
+      }
+    }
+  });
+
+  // Populate summary cards with passed data
+  document.getElementById('daysValue').innerText = '{{ progress.daysFollowing }} days';
+  document.getElementById('bodySummary').innerText = `{{ progress.currentWeight }} kg`;
+  document.getElementById('bodyDetail').innerText = `Waist {{ progress.waist }} in · Chest {{ progress.chest }} in`;
+
+  const goalPercent = Math.min(100, Math.round(({{ progress.startWeight }} - {{ progress.currentWeight }}) / ({{ progress.startWeight }} - {{ user.weight }}) * 100));
+  document.getElementById('goalPercent').innerText = goalPercent + '%';
+  document.getElementById('goalBar').style.width = goalPercent + '%';
+  document.getElementById('goalText').innerText = `Progress towards goal (${goalPercent}%)`;
+</script>
+  
+</body>
+</html>

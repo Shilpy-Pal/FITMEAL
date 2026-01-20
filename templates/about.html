@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About Us - FitMeal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      min-height:100vh;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(120deg, #dbffe4 0, #f6fff6 55%, #b8eeff 100%);
+    }
+   .navbar-brand img:hover {
+   transform: perspective(300px) rotateY(10deg) scale(1.1);
+}
+     /* BRAND NAME */
+      #Brandname {
+  font-size: 2.8rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, #972b89c7, #d38945, #152e7e, #a8e637);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: navbarFlow 3s ease infinite;
+  text-shadow: 
+    3px 4px 7px rgba(241, 241, 219, 0.8),
+    
+  filter: drop-shadow(0 0 10 rgba(0,0,0,0.3));
+}
+@keyframes navbarFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+   
+.navbar-nav .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.35); /* thoda zyada opaque */
+  color: #00b09b; /* matching teal color text */
+  font-weight: 600;
+  border-radius: 5px;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 176, 155, 0.4);
+  transition: all 0.3s ease;
+}
+
+.navbar .btn:hover {
+  background-color: #ebee4c;
+  color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(25, 135, 84, 0.6);
+  transition: all 0.3s ease;
+}
+      .navbar-nav .nav-link:hover {
+        background-color:#ecf01e81;
+        color: #fff;
+         transform: scale(1.1);
+         border: 2px solid white;
+         box-shadow: 0 4px 15px rgba(25, 135, 84, 0.6);
+         transition: all 0.3s ease;
+        }
+       
+ .navbar-brand img {
+  width: 150px;
+  height: 130px;
+  border-radius: 35%;
+  margin-right: 10px;
+  background: linear-gradient(90deg, #00b09b, #96c93d, #00d4aa, #a8e637);
+  background-size: 300% 300%;
+  animation: navbarFlow 3s ease infinite;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+  -webkit-mask-image: linear-gradient(#fff 0 0); /* for WebKit to apply background clip */
+  mask-image: linear-gradient(#fff 0 0);
+  transform-origin:center;
+  transition:transform 0.3s ease;
+}
+    .about-hero {
+      background: linear-gradient(90deg,#30e391 14%, #b6ffe7 87%);
+      border-radius: 36px;
+      box-shadow: 0 8px 38px rgba(60,185,123,0.13), 0 3.5px 12px rgba(36,197,183,0.10);
+      padding: 44px 20px 38px 20px;
+      margin-bottom: 52px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+      transition: box-shadow .42s;
+    }
+    .about-hero:hover {
+      box-shadow: 0 12px 46px rgba(32,218,162,0.17),0 7.5px 24px rgba(0,220,183,0.15);
+    }
+    .about-hero-title {
+      font-size: 2.85rem;
+      font-weight: 800;
+      letter-spacing:2px;
+      color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      background: linear-gradient(90deg,#0daf60, #20c997 70%, #2ce8f6 100%);
+      margin-bottom: 13px;
+    }
+    .about-hero-desc {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #254620;
+      max-width:710px;
+      margin:auto;
+    }
+    .about-cards-row {
+      margin-top: 24px;
+    }
+    .about-card {
+      background: linear-gradient(108deg,#fff 70%, #bcffe4 100%);
+      border-radius: 20px;
+      box-shadow: 0 6px 26px rgba(67,232,183,0.09);
+      border: none;
+      text-align:center;
+      padding:32px 17px 28px 17px;
+      min-height:340px;
+      transition: box-shadow .36s, transform .3s;
+      position:relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .about-card:hover {
+      box-shadow: 0 16px 50px rgba(60,202,150,0.14), 0 4px 22px #a2ffdc61;
+      transform: translateY(-7px) scale(1.032);
+    }
+    .about-card .card-icon {
+      font-size:3.2rem;
+      background: linear-gradient(90deg,#30f0d4 14%, #20c997 87%);
+      color: #18b894;
+      border-radius: 16px;
+      box-shadow: 0 7px 19px #54ffed2e;
+      width: 68px; height: 68px; line-height: 67px;
+      margin:0 auto 18px auto;
+      display: flex; align-items:center; justify-content:center;
+      animation: icon-bounce 2.2s infinite;
+      transition: box-shadow .4s, transform .29s;
+    }
+    .about-card:hover .card-icon {
+      box-shadow: 0 10px 30px #30e89144, 0 6px 14px #b2fde944;
+      background: linear-gradient(99deg,#0feee9 35%, #65e682 100%);
+      color: #fff;
+      transform: scale(1.18) rotate(-7deg);
+      animation-play-state:paused;
+    }
+    @keyframes icon-bounce {
+      0%,100% { transform:translateY(0);}
+      30%    { transform:translateY(-14px);}
+      60%    { transform:translateY(-3px);}
+    }
+    .card-title { font-weight: 700; font-size: 1.25rem; color:#209c69;}
+    .card-text { font-size:1.085rem; color:#284e3a;}
+    .about-mission-card {
+      background: linear-gradient(108deg,#85ffe9 5%, #fff 65%);
+      border-radius: 19px;
+      box-shadow: 0 3px 19px #54ffc32a;
+      padding: 27px 28px 16px;
+      font-size: 1.12rem;
+      font-weight: 600;
+      color: #206055;
+      margin: 46px auto 19px auto;
+      max-width: 860px;
+      position:relative;
+      text-align: center;
+      transition: box-shadow .25s;
+    }
+    .about-mission-card:hover {
+      box-shadow: 0 10px 32px #bafdcc80;
+      background: linear-gradient(80deg,#e9fffa 30%, #e0ffe9 92%);
+      color:#12605c;
+    }
+    @media (max-width:900px){
+      .about-hero-title{font-size:2.15rem;}
+      .about-card {min-height: 310px;}
+    }
+  </style>
+  <!-- Bootstrap Icons (for card icons) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+     <!-- Navbar -->
+   <nav class="navbar navbar-expand-lg shadow-sm sticky-top"
+    style="background: linear-gradient(90deg, #00b09b, #96c93d);">
+    <div class="container py-2">
+      <a class="navbar-brand d-flex align-items-center text-white fw-bold"
+         href="/home" style="font-size: 1.8rem; letter-spacing: 1px;">
+        <img src="{{ url_for('static', filename='images/logo.png') }}"
+           style="letter-spacing: 1px;"  >
+          </a>
+          <span id="Brandname">FitMeal</span>
+      <button class="navbar-toggler border-0 text-white" type="button"
+      data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/home">Home</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/preferences">Preferences</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/recipes">Recipes</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold active" href="/mealplan">Meal Plan</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/report">Report</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/about">About</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/contact">Contact</a></li>
+          <li class="nav-item ms-3">
+            <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-3">
+
+    <!-- HERO -->
+    <div class="about-hero my-4">
+      <div class="about-hero-title">Welcome to FitMeal!</div>
+      <div class="about-hero-desc">
+        FitMeal is your smart nutrition companion—helping you discover, plan, and track healthy Indian meals tailored to your taste, goals and dietary needs. Our mission: to make balanced eating joyful, effortless, and truly personal for everyone!
+      </div>
+    </div>
+
+    <!-- SHADOWED CARDS GRID -->
+    <div class="row about-cards-row gy-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="about-card h-100">
+          <div class="card-icon"><i class="bi bi-heart-pulse"></i></div>
+          <div class="card-title mb-2">Personalised Meal Plans</div>
+          <div class="card-text">Get your daily eating sorted—using your preferences, goals, and health needs, FitMeal creates a custom meal plan, complete with portions, nutrients and healthy Indian options.</div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="about-card h-100">
+          <div class="card-icon"><i class="bi bi-egg-fried"></i></div>
+          <div class="card-title mb-2">100+ Indian Recipes</div>
+          <div class="card-text">From classic dal, sabzi, raita to biryani, snacks, and low-carb favorites—discover tried-and-tested recipes for every time of day. Recipes include detailed nutrition and desi ingredients.</div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="about-card h-100">
+          <div class="card-icon"><i class="bi bi-bar-chart-line"></i></div>
+          <div class="card-title mb-2">Track &amp; Grow Healthy</div>
+          <div class="card-text">Track what you eat, measure your macro-nutrient intake, and stay on top of your wellness journey. Your growth progress, daily report, and healthy habit tools right in one place.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MISSION CARD (Animated gradient, hover effect) -->
+    <div class="about-mission-card mt-5">
+      <span style="font-size:1.38rem;font-weight:700; background:linear-gradient(90deg,#17b985,#00bbe8); -webkit-background-clip:text; color:transparent;">Our Vision &amp; Promise</span>
+      <div>
+        FitMeal is built for every Indian household—vegetarian, vegan, non-veg, keto, diabetic, or fitness enthusiast—making food healthy, fun, and hassle-free.<br>
+        <span style="color:#1780ea;">Eat well. Feel great. Live fit — with FitMeal!</span>
+      </div>
+    </div>
+
+    <div class="text-center pb-4 pt-3" style="color:#8abda7;font-weight:600;letter-spacing:.2px;">
+      &copy; 2025 FitMeal | Made with <span style="color:#fe3a57">&#10084;&#65039;</span> for India
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
