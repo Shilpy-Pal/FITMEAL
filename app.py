@@ -1,3 +1,5 @@
+#new line added
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 import json, os, csv
 from datetime import datetime
@@ -84,7 +86,7 @@ def validate_login(email, password):
         with open(DATA_FILE, 'r') as file:
             users = json.load(file)
         for user in users:
-            if user['email'] == email and user['password'] == password:
+            if user['email'] == email and check_password_hash(user['password'],password):
                 return True
     return False
 
@@ -99,16 +101,20 @@ def home():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
+        password = request.form['password']
+        hashed_password = generate_password_hash(password)
+
         user_data = {
             "name": request.form['name'],
             "email": request.form['email'],
-            "password": request.form['password']
+            "password": hashed_password
         }
+
         save_user(user_data)
         flash("Account created successfully! Please login to continue.", "success")
         return redirect(url_for('login'))
-    return render_template('signup.html')
 
+    return render_template('signup.html')
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     email_value = ""
