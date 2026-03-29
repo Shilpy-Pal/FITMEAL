@@ -7,24 +7,29 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
-    body {
-      background: linear-gradient(120deg, #f0fff4, #d1fae5);
+   * {
+  transition: all 0.3s ease;
+}
+    a{text-decoration: none;
+
+    }
+
+   body {
+      background: #f8fafc;
       font-family: 'Poppins', sans-serif;
       scroll-behavior: smooth;
     }
+    .navbar {
+  backdrop-filter: blur(12px);
+  background: rgba(0, 176, 155, 0.75) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
         #Brandname {
-  font-size: 2.8rem;
-  font-weight: 900;
-  background: linear-gradient(90deg, #972b89c7, #d38945, #152e7e, #a8e637);
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: navbarFlow 3s ease infinite;
-  text-shadow: 
-    3px 4px 7px rgba(241, 241, 219, 0.8),
-    
-  filter: drop-shadow(0 0 10 rgba(0,0,0,0.3));
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: white;
+  text-shadow: none;
+ 
 }
     @keyframes navbarFlow {
       0% { background-position: 0% 50%; }
@@ -49,36 +54,20 @@
     }
     
     .navbar-brand img {
-      width: 150px;
-      height: 130px;
+      width: 90px;
+      height: 80px;
       border-radius: 35%;
       margin-right: 10px;
       background: linear-gradient(90deg, #00b09b, #96c93d, #00d4aa, #a8e637);
       background-size: 300% 300%;
-      animation: navbarFlow 3s ease infinite;
-      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
-      -webkit-mask-image: linear-gradient(#fff 0 0);
-      mask-image: linear-gradient(#fff 0 0);
-      transform-origin:center;
+     
+  
       transition:transform 0.3s ease;
     }
     .navbar-brand img:hover {
    transform: perspective(300px) rotateY(10deg) scale(1.1);
 }
-  .title {
-  text-shadow: 2px 2px 4px black;
-  font-size: 2.5rem;
-  font-weight: 600;
-  position: relative;
-  animation-name: move;
-  animation-iteration-count: infinite;
-  animation-duration: 10s;
-  animation-timing-function: ease-in-out;
-  animation-direction: alternate;
-  animation-play-state: running;
-  animation-fill-mode: forwards;
-  color: rgb(212, 201, 51);
-}
+
 @keyframes move {
   from {
     top: 0;
@@ -89,33 +78,24 @@
     left: 100%;
   }
 }  
-.title-container {
-  background-image: linear-gradient(
-    to right,
-    rgba(0, 0, 255, 0.4),
-    rgba(144, 140, 148, 0.5),
-    rgba(137, 196, 230, 0.815)
-  );
-}
+
 
     .hero-section {
       position: relative;
-      height: 75vh;
+      height: 80vh;
       overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
       text-align: center;
-      border-bottom-left-radius: 80px;
-      border-bottom-right-radius: 80px;
-      background: linear-gradient(135deg, #20c997 0%, #0dcaf0 53%, #ffdf7e 100%);
-    }
+       border-radius: 0 0 60px 60px;
+     }
     .hero-section img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       opacity: 0.58;
-      filter: brightness(83%);
+      filter: brightness(65%);
     }
     .hero-content {
       position: absolute;
@@ -125,10 +105,12 @@
       z-index: 2;
     }
     .hero-content h1, .hero-content p {
-      color: #fff;
-      text-shadow: 0 2px 18px rgba(0,0,0,0.65);
-      font-weight: 800;
-      margin-bottom: 18px;
+       color: #a09797;
+       text-shadow: 0 2px 18px rgba(172, 168, 168, 0.61);
+      
+        margin-bottom: 18px;
+       font-size: 3rem;
+      font-weight: 900;
     }
     .hero-content p {
       font-size: 1.3rem;
@@ -141,18 +123,29 @@
       border-radius: 12px;
       box-shadow: 0 4px 18px rgba(0,0,0,0.14);
     }
+    
+ 
 
+
+
+
+.hero-content p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
     .feature-card {
-      background: #fff;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      padding: 25px;
+      border: 1px solid rgba(255,255,255,0.3);
+      transition: 0.3s;
       border-radius: 20px;
-      padding: 30px 20px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-      text-align: center;
-      transition: transform 0.4s, box-shadow 0.4s;
+    
+      
     }
     .feature-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     }
     .feature-card img {
       width: 80px; margin-bottom: 15px; transition: transform 0.5s;
@@ -171,13 +164,21 @@
       margin-bottom: 40px;
       color: #0b3d1e;
     }
-    .recipe-card {
-      background: #fff;
-      border-radius: 20px;
+    .recipe-card { 
+      border-radius: 18px;
       overflow: hidden;
       transition: transform 0.4s, box-shadow 0.4s;
+      background: white;
+      border: none;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
     }
-    .recipe-card img { width: 100%; height:200px; object-fit: cover; transition: scale 0.4s;}
+    .btn-warning {
+  background: linear-gradient(135deg, #ffb703, #fb8500);
+  border: none;
+  border-radius: 10px;
+}
+    .recipe-card img { width: 100%;
+  aspect-ratio: 16/9; height:220px; object-fit: cover; object-position:center; scale 0.4s;}
     .recipe-card:hover { transform: translateY(-8px); box-shadow:0 12px 40px rgba(0,0,0,0.15);}
     .recipe-card:hover img { transform: scale(1.1);}
     .recipe-card-body { padding: 15px; text-align: center;}
@@ -241,9 +242,7 @@
       </div>
     </div>
   </nav>
- <div class="title-container">
-        <h2 class="title">🙏🏻Welcome to the fitmeal</h2>
-       </div>
+
   <section class="hero-section">
     <img src="{{ url_for('static', filename='images/healthy-meal.jpg') }}">
     <div class="hero-content">
