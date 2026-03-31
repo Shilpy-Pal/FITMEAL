@@ -9,10 +9,20 @@
       rel="stylesheet"
     />
     <style>
-          body { background: linear-gradient(120deg, #f0fff4, hsl(149, 80%, 90%)); font-family: 'Poppins', sans-serif; }
-          .form-section { background:#fff; border-radius:15px; box-shadow:0 4px 25px rgba(0,0,0,0.1); padding:40px 35px; max-width:720px; margin:100px auto; transition:0.3s ease;}
+          body {background: #f8fafc;
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;}
+          .form-section { background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px); border-radius:15px; box-shadow:0 4px 25px rgba(0,0,0,0.1); padding:40px 35px; max-width:720px; margin:100px auto; transition:0.3s ease;}
           .form-section h3 { color:#198754; font-weight:600; margin-bottom:25px; text-align:center; }
-          .btn-primary { background-color:#198754; border:none; padding:10px 25px; font-weight:500; border-radius:8px; }
+          .btn-primary { 
+                background-color:#198754;
+                border:none;
+                padding:10px 25px;
+                font-weight:500;
+                border-radius:8px;
+                 
+              }
           .btn-primary:hover { background-color:#157347; }
           #result { color:#157347; font-weight:500; margin-top:15px; text-align:center; }
           .cal-box{
@@ -21,19 +31,17 @@
       }
 
       /* BRAND NAME */
-      #Brandname {
-  font-size: 2.8rem;
-  font-weight: 900;
-  background: linear-gradient(90deg, #972b89c7, #d38945, #152e7e, #a8e637);
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: navbarFlow 3s ease infinite;
-  text-shadow: 
-    3px 4px 7px rgba(241, 241, 219, 0.8),
-    
-  filter: drop-shadow(0 0 10 rgba(0,0,0,0.3));
+   .navbar {
+  backdrop-filter: blur(12px);
+  background: rgba(0, 176, 155, 0.75) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+        #Brandname {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: white;
+  text-shadow: none;
+ 
 }
 
 @keyframes navbarFlow {
@@ -89,33 +97,32 @@
    .navbar-brand img:hover {
    transform: perspective(300px) rotateY(10deg) scale(1.1);
 }
-.navbar-brand img {
-  width: 150px;
-  height: 130px;
-  border-radius: 35%;
-  margin-right: 10px;
-  background: linear-gradient(90deg, #00b09b, #96c93d, #00d4aa, #a8e637);
-  background-size: 300% 300%;
-  animation: navbarFlow 3s ease infinite;
-  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
-  -webkit-mask-image: linear-gradient(#fff 0 0); /* for WebKit to apply background clip */
-  mask-image: linear-gradient(#fff 0 0);
-  transform-origin:center;
-  transition:transform 0.3s ease;
+ .navbar-brand img {
+      width: 90px;
+      height: 80px;
+      border-radius: 35%;
+      margin-right: 10px;
+      background: linear-gradient(90deg, #00b09b, #96c93d, #00d4aa, #a8e637);
+      background-size: 300% 300%;
+     
+  
+      transition:transform 0.3s ease;
+    }
+    .navbar-brand img:hover {
+   transform: perspective(300px) rotateY(10deg) scale(1.1);
 }
 
-/* Use the same keyframes */
-@keyframes navbarFlow {
-  0% { background-position: 0% 50%; 
-      transform: scale(1);
+@keyframes move {
+  from {
+    top: 0;
+    left: 0;
   }
-  50% { background-position: 100% 50%;
-         transform: scale(1.08); 
+  to {
+    top: 0;
+    left: 100%;
   }
-  100% { background-position: 0% 50%; 
-         transform: scale(1); 
-  }
-}
+}  
+
 /*new line added*/
   .btn-outline-success {
   position: relative;
