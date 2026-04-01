@@ -238,11 +238,11 @@
   top: 0;
   left: -260px;
   width: 260px;
-  height: 100%;
+  height: 100vh;
   background: rgba(255, 255, 255, 0.712);
  backdrop-filter: blur(12px);
   
-  z-index: 9999;
+  z-index: 10000;
   transition: left 0.3s ease;
   padding: 20px;
   overflow-y: auto;
@@ -263,13 +263,13 @@
 
 /* Overlay */
 #overlay {
-  position: fixed;
+  position:fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.315);
-  z-index: 9998;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
   display: none;
 }
 
@@ -322,40 +322,6 @@
 
   </div>
 </nav>
-
-  <!-- 🔥 SIDEBAR -->
-<div id="sidebar" class="sidebar">
-  <div class="sidebar-content">
-
-    <h5 class="mb-4 fw-bold">Menu</h5>
-
-    <a href="/home">Home</a>
-    <a href="/preferences">Preferences</a>
-    <a href="/recipes">Recipes</a>
-    <a href="/mealplan">Meal Plan</a>
-    <a href="/report">Report</a>
-    <a href="/about">About</a>
-    <a href="/contact">Contact</a>
-
-  </div>
-</div>
-
-  <!-- 🔥 SIDEBAR -->
-<div id="sidebar" class="sidebar">
-  <div class="sidebar-content">
-
-    <h5 class="mb-4 fw-bold">Menu</h5>
-
-    <a href="/home">Home</a>
-    <a href="/preferences">Preferences</a>
-    <a href="/recipes">Recipes</a>
-    <a href="/mealplan">Meal Plan</a>
-    <a href="/report">Report</a>
-    <a href="/about">About</a>
-    <a href="/contact">Contact</a>
-
-  </div>
-</div>
 
   <!-- 🔥 SIDEBAR -->
 <div id="sidebar" class="sidebar">
@@ -537,12 +503,15 @@ const overlay = document.getElementById("overlay");
 menuBtn.addEventListener("click", () => {
   sidebar.classList.add("active");
   overlay.classList.add("active");
+  document.body.style.overflow = "hidden"; // 🔥 scroll lock
 });
 
 overlay.addEventListener("click", () => {
   sidebar.classList.remove("active");
   overlay.classList.remove("active");
+  document.body.style.overflow = "auto"; // 🔥 unlock
 });
+
 </script>
 
 </body>
