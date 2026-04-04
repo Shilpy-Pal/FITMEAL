@@ -170,11 +170,28 @@ def recipes():
                 user = prefs[-1]
     return render_template('recipes.html', user=user)
 
+# --------- SCAN PAGE ---------
+@app.route("/scan")
+def scan():
+    return render_template("scan.html")
+
 @app.route('/mealplan')
 def mealplan():
     return render_template('mealplan.html')
 
 
+# --------- SCAN ---------
+@app.route("/scan-food", methods=["POST"])
+def scan_food():
+    print("API called")   # 👈 check
+
+    data = request.get_json()
+    print(data)
+
+    return jsonify({
+        "food": "pizza (demo)",
+        "calories": 285
+    })
 # --------- CONTACT / ABOUT ---------
 
 @app.route('/contact', methods=['GET', 'POST'])
