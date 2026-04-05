@@ -313,19 +313,27 @@ async function openCamera() {
   document.getElementById("cameraBox").classList.remove("d-none");
 
   try {
-    // 👇 Try back camera first
-    stream = await navigator.mediaDevices.getUserMedia({ video: {facingMode:{exact:"environment"}} });
-    document.getElementById("video").srcObject = stream;
-  } 
-  catch (err) {
-    alert("Camera access denied ❌");
-    console.log("Back camera not found, switching to front...");
-  
-   // 👇 Fallback to front camera (laptop case)
+    // ✅ Step 1: Try back camera (BEST for mobile)
     stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "user" }
+      video: { facingMode: "environment" }
     });
+
+  } catch (err1) {
+    try {
+      console.log("Back camera not found, switching to front...");
+
+      // ✅ Step 2: fallback to front
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user" }
+      });
+
+    } catch (err2) {
+      // ❌ Step 3: only if both fail
+      alert("Camera access denied ❌ Please allow permission");
+      return;
+    }
   }
+
   document.getElementById("video").srcObject = stream;
 }
 
