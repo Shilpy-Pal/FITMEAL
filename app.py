@@ -15,8 +15,7 @@ PREF_FILE = os.path.join(DATA_DIR, "preferences.json")
 RECIPES_CSV = os.path.join(DATA_DIR, "recipes.csv")
 PROGRESS_FILE = os.path.join(DATA_DIR, "progress_log.json")
 #scan feature
-
-client = vision.ImageAnnotatorClient.from_service_account_file("key.json")
+client = vision.ImageAnnotatorClient()
 
 def detect_food(image_base64):
     image_bytes = base64.b64decode(image_base64.split(',')[1])
@@ -364,6 +363,7 @@ def report():
                            user=user,
                            dates=dates,
                            weights=weights)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
