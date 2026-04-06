@@ -3,6 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 import json, os, csv
 from datetime import datetime
+from google.cloud import vision
+import base64
 
 app = Flask(__name__)
 app.secret_key = 'ShilpySecret123!'
@@ -12,8 +14,30 @@ DATA_FILE = os.path.join(DATA_DIR, "users.json")
 PREF_FILE = os.path.join(DATA_DIR, "preferences.json")
 RECIPES_CSV = os.path.join(DATA_DIR, "recipes.csv")
 PROGRESS_FILE = os.path.join(DATA_DIR, "progress_log.json")
+#scan feature
 
+client = vision.ImageAnnotatorClient.from_service_account_file("key.json")
 
+def detect_food(image_base64):
+    image_bytes = base64.b64decode(image_base64.split(',')[1])
+
+    image = vision.Image(content=image_bytes)
+
+    response = client.label_detection(image=image)
+    labels = response.label_annotations
+
+    print("FULL LABELS:", labels)
+
+    ignore_words = ["food", "dish", "cuisine", "meal", "ingredient"]
+
+    for label in labels:
+        name = label.description.lower()
+        print("Label:", name)
+
+        if name not in ignore_words:
+            return name   # 👈 first useful food
+
+    return "Unknown"
 # --------- API ROUTES ---------
 
 @app.route('/api/recipes')
@@ -183,15 +207,25 @@ def mealplan():
 # --------- SCAN ---------
 @app.route("/scan-food", methods=["POST"])
 def scan_food():
-    print("API called")   # 👈 check
+    try:
+        data = request.get_json()
+        image = data["image"]
 
-    data = request.get_json()
-    print(data)
+        food = detect_food(image)
 
-    return jsonify({
-        "food": "pizza (demo)",
-        "calories": 285
-    })
+        print("Detected:", food)
+
+        return jsonify({
+            "food": food,
+            "calories": "testing"
+        })
+
+    except Exception as e:
+        print("ERROR:", e)   # 👈 terminal me error dikhega
+        return jsonify({
+            "food": "error",
+            "calories": "0"
+        })
 # --------- CONTACT / ABOUT ---------
 
 @app.route('/contact', methods=['GET', 'POST'])
