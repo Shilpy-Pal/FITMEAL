@@ -249,7 +249,48 @@
       text-align:center;
     }
 
-   
+   .progress-ring {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: auto;
+}
+
+.progress-ring svg {
+  transform: rotate(-90deg);
+}
+
+.progress-ring circle {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+
+.progress-ring .bg {
+  stroke: #e6e6e6;
+}
+
+.progress-ring .progress {
+  stroke: url(#gradient);
+  stroke-dasharray: 314;
+  stroke-dashoffset: 314;
+  transition: stroke-dashoffset 1.5s ease;
+}
+
+/* Gradient color */
+.progress-ring svg defs {
+  display: none;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0072ff;
+}
   </style>
 </head>
 <body>
@@ -384,9 +425,18 @@
         <div class="report-card" style="--fade-delay:.34s;">
           <div class="rc-icon"><i class="bi bi-bullseye"></i></div>
           <div class="rc-label">Goal Progress (Today)</div>
-          <div class="rc-value" id="goalPercent">-- %</div>
-          <div class="progress mt-3 mb-1" style="height:1.2rem;">
-            <div id="goalBar" class="progress-bar bg-success" style="width:0%;" role="progressbar"></div>
+          <div class="progress-ring">
+            <svg width="120" height="120">
+              <defs>
+  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#00c6ff"/>
+    <stop offset="100%" stop-color="#0072ff"/>
+  </linearGradient>
+</defs>
+              <circle cx="60" cy="60" r="50" class="bg"></circle>
+              <circle cx="60" cy="60" r="50" class="progress" id="progressCircle"></circle>
+            </svg>
+            <div class="progress-text" id="goalPercent">0%</div>
           </div>
           <div class="rc-subtext" id="goalText"></div>
         </div>
@@ -434,53 +484,89 @@ overlay.addEventListener("click", () => {
 
 const dates = {{ dates | tojson | safe }};
 const weights = {{ weights | tojson | safe }};
+  const startWeight = {{ progress.startWeight }};
+const goalWeight = {{ user.weight }};
 
+// Plot ke liye transform
+// Transform weights relative to startWeight (so increase goes up)
+const plotWeights = weights.map(w => w - {{ progress.startWeight }});
 
-  const ctx = document.getElementById('weightChart').getContext('2d');
-  const weightChart = new Chart(ctx, {
+const ctx = document.getElementById('weightChart').getContext('2d');
+const weightChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: dates,
-      datasets: [{
-        label: 'Weight (kg)',
-        data: weights,
-        borderColor: '#20c997',
-        backgroundColor: 'rgba(32, 201, 151, 0.1)',
-        fill: true,
-        tension: 0.3,
-        pointRadius: 3,
-        pointHoverRadius: 6,
-      }]
+        labels: dates,
+        datasets: [{
+            label: 'Weight Change (kg)',
+            data: plotWeights,
+            borderColor: '#20c997',
+            backgroundColor: 'rgba(32, 201, 151, 0.1)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 3,
+            pointHoverRadius: 6,
+        }]
     },
     options: {
-      responsive: true,
-      scales: {
-        x: {
-          title: {
-            display: true,
-            text: 'Date'
-          }
+        responsive: true,
+        scales: {
+            x: { 
+                title: { display: true, text: 'Date' } 
+            },
+            y: { 
+                title: { display: true, text: 'Weight Change (kg)' }, 
+                beginAtZero: false 
+            }
         },
-        y: {
-          title: {
-            display: true,
-            text: 'Weight (kg)'
-          },
-          beginAtZero: false
+        plugins: {
+            annotation: {
+                annotations: {
+                    goalLine: {
+                        type: 'line',
+                        yMin: {{ user.weight }} - {{ progress.startWeight }},
+                        yMax: {{ user.weight }} - {{ progress.startWeight }},
+                        borderColor: 'red',
+                        borderWidth: 2,
+                        label: { content: 'Goal', enabled: true, position: 'start' }
+                    }
+                }
+            }
         }
-      }
     }
-  });
-
+});
   // Populate summary cards with passed data
   document.getElementById('daysValue').innerText = '{{ progress.daysFollowing }} days';
   document.getElementById('bodySummary').innerText = `{{ progress.currentWeight }} kg`;
   document.getElementById('bodyDetail').innerText = `Waist {{ progress.waist }} in · Chest {{ progress.chest }} in`;
+// 🔹 safer calculation
+let rawPercent = (({{ progress.startWeight }} - {{ progress.currentWeight }}) / ({{ progress.startWeight }} - {{ user.weight }}) * 100);
 
-  const goalPercent = Math.min(100, Math.round(({{ progress.startWeight }} - {{ progress.currentWeight }}) / ({{ progress.startWeight }} - {{ user.weight }}) * 100));
-  document.getElementById('goalPercent').innerText = goalPercent + '%';
-  document.getElementById('goalBar').style.width = goalPercent + '%';
-  document.getElementById('goalText').innerText = `Progress towards goal (${goalPercent}%)`;
+// Prevent negative progress if weight increased
+const goalPercent = Math.max(0, Math.min(100, Math.round(rawPercent)));
+
+const circle = document.getElementById("progressCircle");
+const radius = 50;
+const circumference = 2 * Math.PI * radius;
+
+circle.style.strokeDasharray = circumference;
+
+const offset = circumference - (goalPercent / 100) * circumference;
+
+setTimeout(() => {
+    circle.style.strokeDashoffset = offset;
+}, 200);
+
+document.getElementById("goalPercent").innerText = goalPercent + "%";
+
+// 🔹 optional: show message if weight increased
+const goalTextEl = document.getElementById('goalText');
+if(rawPercent < 0) {
+    goalTextEl.innerText = "Weight increased! Goal behind.";
+    circle.style.stroke = "#ff4d4d"; // red color for negative
+} else {
+    goalTextEl.innerText = `Progress towards goal (${goalPercent}%)`;
+    circle.style.stroke = "url(#gradient)"; // normal gradient
+}
 
 document.getElementById("progressForm").addEventListener("submit", function() {
 
@@ -534,3 +620,4 @@ document.getElementById("progressForm").addEventListener("submit", function(e) {
   
 </body>
 </html>
+
