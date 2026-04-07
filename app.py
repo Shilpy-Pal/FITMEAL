@@ -5,7 +5,7 @@ import json, os, csv
 from datetime import datetime
 from google.cloud import vision
 import base64
-
+import re
 app = Flask(__name__)
 app.secret_key = 'ShilpySecret123!'
 
@@ -14,6 +14,81 @@ DATA_FILE = os.path.join(DATA_DIR, "users.json")
 PREF_FILE = os.path.join(DATA_DIR, "preferences.json")
 RECIPES_CSV = os.path.join(DATA_DIR, "recipes.csv")
 PROGRESS_FILE = os.path.join(DATA_DIR, "progress_log.json")
+
+
+import requests
+
+# 🟢 CHATBOT ROUTE
+
+SPOONACULAR_API_KEY = "1e942226b8fa498daff2e16db0e08f8a"  # free tier key le lo
+
+
+@app.route("/chatbot", methods=["POST"])
+def chatbot():
+    query = request.json.get("query", "").lower()
+    response_text = ""
+    
+    # ----------------- Parse query -----------------
+    calories_limit = None
+    food_focus = None
+    specific_food = None
+
+    # find numbers in query (calorie limit)
+    nums = re.findall(r'\d+', query)
+    if nums:
+        calories_limit = int(nums[0])
+
+    if "protein" in query:
+        food_focus = "high protein"
+    elif "carb" in query:
+        food_focus = "high carb"
+    elif "fat" in query:
+        food_focus = "high fat"
+
+    # try to find specific food name (last 2 words)
+    words = query.split()
+    if len(words) > 0 and not any(k in query for k in ["protein","calorie","carb","fat","limit","kitna"]):
+        specific_food = " ".join(words[-2:])
+
+    # ----------------- Spoonacular API call -----------------
+    try:
+        if specific_food:
+            # Nutrition info of specific food
+            url = f"https://api.spoonacular.com/recipes/guessNutrition?title={specific_food}&apiKey={SPOONACULAR_API_KEY}"
+            data = requests.get(url).json()
+            food_name = specific_food.title()
+            calories = data.get("calories", {}).get("value", 0)
+            protein = data.get("protein", {}).get("value", 0)
+            carbs = data.get("carbs", {}).get("value", 0)
+            fat = data.get("fat", {}).get("value", 0)
+            response_text = f"🍽️ {food_name}\nCalories: {calories} kcal\nProtein: {protein} g\nCarbs: {carbs} g\nFat: {fat} g"
+
+        else:
+            # Suggest recipe based on calorie limit or protein focus
+            params = {"number":1,"apiKey":SPOONACULAR_API_KEY}
+            if calories_limit:
+                params["maxCalories"] = calories_limit
+            if food_focus:
+                if "protein" in food_focus: params["minProtein"] = 15
+                if "carb" in food_focus: params["minCarbs"] = 20
+                if "fat" in food_focus: params["minFat"] = 10
+
+            url = "https://api.spoonacular.com/recipes/complexSearch"
+            data = requests.get(url, params=params).json()
+            results = data.get("results", [])
+            if results:
+                recipe = results[0]
+                title = recipe.get("title", "Food")
+                response_text = f"🍴 Try eating **{title}**"
+            else:
+                response_text = "Sorry, no suitable recipe found. Try different query."
+
+    except Exception as e:
+        print("Chatbot ERROR:", e)
+        response_text = "Oops! Something went wrong. Please try again."
+
+    return jsonify({"response": response_text})
+
 #scan feature
 client = vision.ImageAnnotatorClient.from_service_account_file("key.json")
 
@@ -38,6 +113,9 @@ def detect_food(image_base64):
 
     return "Unknown"
 # --------- API ROUTES ---------
+@app.route("/chat")
+def chat():
+    return render_template("chat.html")
 
 @app.route('/api/recipes')
 def api_recipes():
