@@ -298,5 +298,29 @@
         "diet": "Vegetarian",
         "goal": "Maintain Weight",
         "activity": "1.55"
+    },
+    {
+        "age": "16",
+        "height": "160.02",
+        "weight": "50",
+        "gender": "Female",
+        "waist": "83.82000000000001",
+        "chest": "91.44",
+        "hips": "96.52",
+        "diet": "Vegetarian",
+        "goal": "Lose Weight",
+        "activity": "1.725"
+    },
+    {
+        "age": "25",
+        "height": "160.02",
+        "weight": "55",
+        "gender": "Female",
+        "waist": "83.82000000000001",
+        "chest": "91.44",
+        "hips": "101.6",
+        "diet": "Vegetarian",
+        "goal": "Lose Weight",
+        "activity": "1.2"
     }
 ]

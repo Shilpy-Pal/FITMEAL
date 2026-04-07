@@ -347,12 +347,12 @@
           <input type="number" step="0.1" min="20" max="200" class="form-control" id="currentWeightInput" required>
         </div>
         <div class="col-md-2">
-          <label class="form-label">Waist (cm)</label>
-          <input type="number" step="0.1" min="40" max="200" class="form-control" id="waistInput">
+          <label class="form-label">Waist (inches)</label>
+          <input type="number" class="form-control" id="waistInput">
         </div>
         <div class="col-md-2">
-          <label class="form-label">Chest (cm)</label>
-          <input type="number" step="0.1" min="40" max="200" class="form-control" id="chestInput">
+          <label class="form-label">Chest (inches)</label>
+          <input type="number" class="form-control" id="chestInput">
         </div>
         <div class="col-md-2 d-flex align-items-end">
           <button type="submit" class="btn btn-success w-100">
@@ -481,6 +481,55 @@ const weights = {{ weights | tojson | safe }};
   document.getElementById('goalPercent').innerText = goalPercent + '%';
   document.getElementById('goalBar').style.width = goalPercent + '%';
   document.getElementById('goalText').innerText = `Progress towards goal (${goalPercent}%)`;
+
+document.getElementById("progressForm").addEventListener("submit", function() {
+
+  const waist = document.getElementById("waistInput");
+  const chest = document.getElementById("chestInput");
+
+  if (waist.value) waist.value = waist.value * 2.54;
+  if (chest.value) chest.value = chest.value * 2.54;
+
+});
+
+document.getElementById("progressForm").addEventListener("submit", function(e) {
+  e.preventDefault(); // 🔥 page reload rokega
+
+  const weight = document.getElementById("currentWeightInput").value;
+  let waist = document.getElementById("waistInput").value;
+  let chest = document.getElementById("chestInput").value;
+
+  // inches → cm convert
+  if (waist) waist = waist * 2.54;
+  if (chest) chest = chest * 2.54;
+
+  const data = {
+    date: new Date().toISOString().split("T")[0], // yyyy-mm-dd
+    weight: parseFloat(weight),
+    waist: waist ? parseFloat(waist) : null,
+    chest: chest ? parseFloat(chest) : null
+  };
+
+  // 🔥 API call
+  fetch("/api/save_progress", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (res.success) {
+      alert("Progress saved!");
+      location.reload(); // 🔥 reload → graph update
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Error saving progress");
+  });
+});
 </script>
   
 </body>

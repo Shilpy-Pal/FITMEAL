@@ -276,7 +276,7 @@
 
     <div class="form-section">
       <h3>Set Your Health Preferences</h3>
-      <h4 id="convertmeasure">1 Feet equals to 30.42cm and 1 Inch equals to 2.54cm</h4>
+      
       <form id="preferencesForm" method="post" action="/preferences">
         <div class="row">
           <div class="col-md-6 mb-3">
@@ -292,16 +292,12 @@
             />
           </div>
           <div class="col-md-6 mb-3">
-            <label for="height">Height (cm)</label>
-            <input
-              type="number"
-              class="form-control"
-              id="height"
-              name="height"
-              min="120"
-              max="210"
-              required
-            />
+            <label for="height">Height</label>
+            <div class="d-flex gap-2">
+            <input type="number" id="heightFeet" name="heightFeet" class="form-control" placeholder="Feet" required>
+            <input type="number" id="heightInch" name="heightInch" class="form-control" placeholder="Inch" required>
+          </div>
+           <input type="hidden" name="height" id="height">
           </div>
         </div>
 
@@ -331,17 +327,17 @@
 
         <div class="row">
           <div class="col-md-4 mb-3">
-            <label for="waist">Waist (cm)</label>
-            <input type="number" class="form-control" min="40"  max="170" id="waist" name="waist" />
+            <label for="waist">Waist (inches)</label>
+            <input type="number" class="form-control" id="waist" name="waist" />
           </div>
           <div class="col-md-4 mb-3">
-            <label>Chest (cm)</label>
-            <input type="number" class="form-control" id="chest" min="60"
-            max="150" name="chest" />
+            <label>Chest (inches)</label>
+            <input type="number" class="form-control" id="chest" 
+            name="chest" />
           </div>
           <div class="col-md-4 mb-3">
-            <label for="hips">Hips (cm)</label>
-            <input type="number" class="form-control" id="hips" min="70" max="150" name="hips" />
+            <label for="hips">Hips (inches)</label>
+            <input type="number" class="form-control" id="hips" name="hips" />
           </div>
         </div>
 
@@ -394,7 +390,11 @@
 
     <script>
       function calculateBMI() {
-        let h = parseFloat(document.getElementById("height").value);
+        let feet = parseFloat(document.getElementById("heightFeet").value);
+        let inch = parseFloat(document.getElementById("heightInch").value);
+
+        let totalInches = (feet * 12) + inch;
+        let h = totalInches * 2.54; // cm
         let w = parseFloat(document.getElementById("weight").value);
         let age = parseInt(document.getElementById("age").value);
         let gender = document.getElementById("gender").value;
@@ -441,6 +441,28 @@
           "result"
         ).innerHTML = `BMI: <b>${bmi}</b> (${status})<br>Recommended Calories: <b>${calories}</b> kcal`;
       }
+      
+      document.getElementById("preferencesForm").addEventListener("submit", function() {
+
+  // HEIGHT
+  const feet = document.getElementById("heightFeet").value;
+  const inch = document.getElementById("heightInch").value;
+
+  const totalInches = (feet * 12) + Number(inch);
+  const heightCm = totalInches * 2.54;
+
+  document.getElementById("height").value = heightCm;
+
+  // WAIST / CHEST / HIPS
+  const waist = document.getElementById("waist");
+  const chest = document.getElementById("chest");
+  const hips = document.getElementById("hips");
+
+  if (waist.value) waist.value = waist.value * 2.54;
+  if (chest.value) chest.value = chest.value * 2.54;
+  if (hips.value) hips.value = hips.value * 2.54;
+
+});
 
         // Navbar auto close on click
 const navLinks = document.querySelectorAll('.nav-link');
