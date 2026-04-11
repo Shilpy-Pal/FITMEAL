@@ -1,11 +1,17 @@
-#new line added
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-import json, os, csv
-from datetime import datetime
-from google.cloud import vision
+import json
+import os
+import csv
 import base64
-import re
+
+from dotenv import load_dotenv
+from google.cloud import vision
+
+from services.chatbot_service import ChatbotService, ChatbotServiceError
+
+load_dotenv()
+
 app = Flask(__name__)
 app.secret_key = 'ShilpySecret123!'
 
@@ -15,82 +21,29 @@ PREF_FILE = os.path.join(DATA_DIR, "preferences.json")
 RECIPES_CSV = os.path.join(DATA_DIR, "recipes.csv")
 PROGRESS_FILE = os.path.join(DATA_DIR, "progress_log.json")
 
-
-import requests
-
-# 🟢 CHATBOT ROUTE
-
-SPOONACULAR_API_KEY = "1e942226b8fa498daff2e16db0e08f8a"  # free tier key le lo
+chatbot_service = ChatbotService()
 
 
 @app.route("/chatbot", methods=["POST"])
 def chatbot():
-    query = request.json.get("query", "").lower()
-    response_text = ""
-    
-    # ----------------- Parse query -----------------
-    calories_limit = None
-    food_focus = None
-    specific_food = None
+    payload = request.get_json(silent=True) or {}
+    query = (payload.get("query") or "").strip()
+    if not query:
+        return jsonify({"type": "chat", "message": "Please enter a message.", "meal_plan": []}), 400
 
-    # find numbers in query (calorie limit)
-    nums = re.findall(r'\d+', query)
-    if nums:
-        calories_limit = int(nums[0])
-
-    if "protein" in query:
-        food_focus = "high protein"
-    elif "carb" in query:
-        food_focus = "high carb"
-    elif "fat" in query:
-        food_focus = "high fat"
-
-    # try to find specific food name (last 2 words)
-    words = query.split()
-    if len(words) > 0 and not any(k in query for k in ["protein","calorie","carb","fat","limit","kitna"]):
-        specific_food = " ".join(words[-2:])
-
-    # ----------------- Spoonacular API call -----------------
     try:
-        if specific_food:
-            # Nutrition info of specific food
-            url = f"https://api.spoonacular.com/recipes/guessNutrition?title={specific_food}&apiKey={SPOONACULAR_API_KEY}"
-            data = requests.get(url).json()
-            food_name = specific_food.title()
-            calories = data.get("calories", {}).get("value", 0)
-            protein = data.get("protein", {}).get("value", 0)
-            carbs = data.get("carbs", {}).get("value", 0)
-            fat = data.get("fat", {}).get("value", 0)
-            response_text = f"🍽️ {food_name}\nCalories: {calories} kcal\nProtein: {protein} g\nCarbs: {carbs} g\nFat: {fat} g"
+        result = chatbot_service.handle_query(query)
+        return jsonify(result)
+    except ChatbotServiceError as exc:
+        print("Chatbot configuration error:", exc)
+        return jsonify({"type": "chat", "message": "", "meal_plan": [], "error": str(exc)}), 500
+    except Exception as exc:
+        print("Chatbot ERROR:", exc)
+        return jsonify({"type": "chat", "message": "", "meal_plan": [], "error": str(exc)}), 500
 
-        else:
-            # Suggest recipe based on calorie limit or protein focus
-            params = {"number":1,"apiKey":SPOONACULAR_API_KEY}
-            if calories_limit:
-                params["maxCalories"] = calories_limit
-            if food_focus:
-                if "protein" in food_focus: params["minProtein"] = 15
-                if "carb" in food_focus: params["minCarbs"] = 20
-                if "fat" in food_focus: params["minFat"] = 10
 
-            url = "https://api.spoonacular.com/recipes/complexSearch"
-            data = requests.get(url, params=params).json()
-            results = data.get("results", [])
-            if results:
-                recipe = results[0]
-                title = recipe.get("title", "Food")
-                response_text = f"🍴 Try eating **{title}**"
-            else:
-                response_text = "Sorry, no suitable recipe found. Try different query."
-
-    except Exception as e:
-        print("Chatbot ERROR:", e)
-        response_text = "Oops! Something went wrong. Please try again."
-
-    return jsonify({"response": response_text})
-
-#scan feature
 client = vision.ImageAnnotatorClient.from_service_account_file("key.json")
+
 
 def detect_food(image_base64):
     image_bytes = base64.b64decode(image_base64.split(',')[1])
@@ -109,13 +62,15 @@ def detect_food(image_base64):
         print("Label:", name)
 
         if name not in ignore_words:
-            return name   # 👈 first useful food
+            return name
 
     return "Unknown"
-# --------- API ROUTES ---------
+
+
 @app.route("/chat")
 def chat():
     return render_template("chat.html")
+
 
 @app.route('/api/recipes')
 def api_recipes():
@@ -127,7 +82,7 @@ def api_recipes():
                 if key in row and row[key]:
                     try:
                         row[key] = float(row[key]) if '.' in row[key] else int(row[key])
-                    except:
+                    except Exception:
                         row[key] = 0
                 else:
                     row[key] = 0
@@ -168,8 +123,6 @@ def api_recipes():
     return jsonify(recipes)
 
 
-# --------- SIGNUP & AUTH ---------
-
 def save_user(data):
     if not os.path.exists(DATA_DIR):
         os.makedirs(DATA_DIR)
@@ -182,22 +135,26 @@ def save_user(data):
     with open(DATA_FILE, 'w') as file:
         json.dump(users, file, indent=4)
 
+
 def validate_login(email, password):
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, 'r') as file:
             users = json.load(file)
         for user in users:
-            if user['email'] == email and check_password_hash(user['password'],password):
+            if user['email'] == email and check_password_hash(user['password'], password):
                 return True
     return False
+
 
 @app.route('/')
 def root():
     return redirect(url_for('signup'))
 
+
 @app.route('/home')
 def home():
     return render_template('home.html')
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -216,6 +173,8 @@ def signup():
         return redirect(url_for('login'))
 
     return render_template('signup.html')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     email_value = ""
@@ -229,8 +188,6 @@ def login():
         return render_template('login.html', email=email_value)
     return render_template('login.html', email=email_value)
 
-
-# --------- PREFERENCES / RECIPES / MEALPLAN ---------
 
 @app.route('/preferences', methods=['GET', 'POST'])
 def preferences():
@@ -261,6 +218,7 @@ def preferences():
         return redirect(url_for('recipes'))
     return render_template('preferences.html')
 
+
 @app.route('/recipes')
 def recipes():
     user = None
@@ -271,17 +229,17 @@ def recipes():
                 user = prefs[-1]
     return render_template('recipes.html', user=user)
 
-# --------- SCAN PAGE ---------
+
 @app.route("/scan")
 def scan():
     return render_template("scan.html")
+
 
 @app.route('/mealplan')
 def mealplan():
     return render_template('mealplan.html')
 
 
-# --------- SCAN ---------
 @app.route("/scan-food", methods=["POST"])
 def scan_food():
     try:
@@ -298,12 +256,12 @@ def scan_food():
         })
 
     except Exception as e:
-        print("ERROR:", e)   # 👈 terminal me error dikhega
+        print("ERROR:", e)
         return jsonify({
             "food": "error",
             "calories": "0"
         })
-# --------- CONTACT / ABOUT ---------
+
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -315,14 +273,14 @@ def contact():
         }
         if not os.path.exists(DATA_DIR):
             os.makedirs(DATA_DIR)
-        CONTACTS_FILE = os.path.join(DATA_DIR, "contacts.json")
-        if os.path.exists(CONTACTS_FILE):
-            with open(CONTACTS_FILE, 'r') as f:
+        contacts_file = os.path.join(DATA_DIR, "contacts.json")
+        if os.path.exists(contacts_file):
+            with open(contacts_file, 'r') as f:
                 contacts = json.load(f)
         else:
             contacts = []
         contacts.append(data)
-        with open(CONTACTS_FILE, 'w') as f:
+        with open(contacts_file, 'w') as f:
             json.dump(contacts, f, indent=4)
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return jsonify({"success": True})
@@ -330,12 +288,11 @@ def contact():
         return redirect(url_for('contact'))
     return render_template('contact.html')
 
+
 @app.route('/about')
 def about():
     return render_template('about.html')
 
-
-# --------- PROGRESS LOG API ---------
 
 @app.route('/api/save_progress', methods=['POST'])
 def save_progress():
@@ -347,15 +304,13 @@ def save_progress():
         with open(PROGRESS_FILE, 'r') as f:
             try:
                 logs = json.load(f)
-            except:
+            except Exception:
                 logs = []
     logs.append(data)
     with open(PROGRESS_FILE, 'w') as f:
         json.dump(logs, f, indent=2)
     return jsonify({"success": True})
 
-
-# --------- REPORT PAGE ---------
 
 @app.route('/report')
 def report():
@@ -375,9 +330,9 @@ def report():
             "waist": "34",
             "chest": "36",
             "hips": "40",
-            "diet": "Vegetarian",
             "goal": "Lose Weight",
-            "activity": "1.2"
+            "activity": "1.2",
+            "diet": "Vegetarian"
         }
 
     age = int(float(user.get("age") or 25))
@@ -387,13 +342,11 @@ def report():
     activity = float(user.get("activity") or 1.2)
     goal = user.get("goal", "Maintain Weight")
 
-    # Calculate BMR
     if gender.lower().startswith("m"):
         bmr = 88.362 + 13.397 * weight_kg + 4.799 * height_cm - 5.677 * age
     else:
         bmr = 447.593 + 9.247 * weight_kg + 3.098 * height_cm - 4.330 * age
 
-    # Calculate TDEE (Total Daily Energy Expenditure)
     tdee = bmr * activity
     if "lose" in goal.lower():
         cal_goal = tdee - 300
@@ -403,44 +356,64 @@ def report():
         cal_goal = tdee
     cal_goal = int(round(cal_goal))
 
-    # Protein goal based on goal
     if "lose" in goal.lower() or "build" in goal.lower():
         protein_goal = round(weight_kg * 1.6)
     else:
         protein_goal = round(weight_kg * 1.2)
 
-    # Load progress logs
     logs = []
     if os.path.exists(PROGRESS_FILE):
         with open(PROGRESS_FILE, 'r') as f:
             try:
                 logs = json.load(f)
-            except:
+            except Exception:
                 logs = []
 
-    # Extract dates and weights for chart
     dates = [entry["date"] for entry in logs if "date" in entry]
     weights = [entry["weight"] for entry in logs if "weight" in entry]
+    start_weight = float(logs[0]["weight"]) if logs and "weight" in logs[0] else weight_kg
+    current_weight = float(logs[-1]["weight"]) if logs and "weight" in logs[-1] else weight_kg
+    latest_waist = next((entry.get("waist") for entry in reversed(logs) if entry.get("waist") not in (None, "")), user.get("waist", ""))
+    latest_chest = next((entry.get("chest") for entry in reversed(logs) if entry.get("chest") not in (None, "")), user.get("chest", ""))
+    last_check_in = next((entry.get("date") for entry in reversed(logs) if entry.get("date")), "")
+
+    if "lose" in goal.lower():
+        goal_weight = round(start_weight * 0.95, 1)
+    elif "gain" in goal.lower() or "build" in goal.lower():
+        goal_weight = round(start_weight * 1.05, 1)
+    else:
+        goal_weight = round(start_weight, 1)
+
+    bmi = round(current_weight / ((height_cm / 100) ** 2), 1) if height_cm else 0
+    weight_change = round(current_weight - start_weight, 1)
 
     progress_meta = {
         "daysFollowing": len(logs) if logs else 0,
-        "startWeight": logs[0]["weight"] if logs else weight_kg,
-        "currentWeight": logs[-1]["weight"] if logs else weight_kg,
-        "waist": user.get("waist", ""),
-        "chest": user.get("chest", ""),
+        "startWeight": start_weight,
+        "currentWeight": current_weight,
+        "waist": latest_waist,
+        "chest": latest_chest,
         "goal": goal,
+        "goalWeight": goal_weight,
         "calorieGoal": cal_goal,
         "proteinGoal": protein_goal,
         "caloriesToday": 0,
-        "proteinToday": 0
+        "proteinToday": 0,
+        "lastCheckIn": last_check_in,
+        "bmi": bmi,
+        "weightChange": weight_change,
+        "heightCm": round(height_cm),
+        "activity": activity
     }
 
-    return render_template('report.html',
-                           progress=progress_meta,
-                           logs=logs,
-                           user=user,
-                           dates=dates,
-                           weights=weights)
+    return render_template(
+        'report.html',
+        progress=progress_meta,
+        logs=logs,
+        user=user,
+        dates=dates,
+        weights=weights
+    )
 
 
 if __name__ == '__main__':

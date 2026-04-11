@@ -2,623 +2,260 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Your Progress Report - FitMeal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap CSS + Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress Report - FitMeal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <style>
-     * {
-  transition: all 0.3s ease;
-}
-    a{text-decoration: none;
-
-    }
-
-   body {
-      background: #f8fafc;
-      
-    
-      font-family: 'Poppins', sans-serif;
-      scroll-behavior: smooth;
-      
-    }
-    .navbar {
-  backdrop-filter: blur(12px);
-  background: rgba(0, 176, 155, 0.75) !important;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
-}
-        #Brandname {
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: white;
-  text-shadow: none;
- 
-}
-    @keyframes navbarFlow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .navbar-nav .nav-link:hover {
-      background-color: #ecf01e81;
-      color: #fff;
-      transform: scale(1.1);
-      border: 2px solid white;
-      box-shadow: 0 4px 15px rgba(25, 135, 84, 0.6);
-      transition: all 0.3s ease;
-    }
-    .navbar .btn:hover {
-      background-color: #ebee4c;
-      color: #fff;
-      transform: scale(1.1);
-      box-shadow: 0 4px 15px rgba(25, 135, 84, 0.6);
-      transition: all 0.3s ease;
-    }
-    
-    .navbar-brand img {
-      width: 90px;
-      height: 80px;
-      border-radius: 35%;
-      margin-right: 10px;
-      background: linear-gradient(90deg, #00b09b, #96c93d, #00d4aa, #a8e637);
-      background-size: 300% 300%;
-     
-  
-      transition:transform 0.3s ease;
-    }
-    .navbar-brand img:hover {
-   transform: perspective(300px) rotateY(10deg) scale(1.1);
-}
-
-@keyframes move {
-  from {
-    top: 0;
-    left: 0;
-  }
-  to {
-    top: 0;
-    left: 100%;
-  }
-}  
-@media (max-width: 768px) {
-  .navbar-collapse {
-    position: absolute;
-    top: 0; /* navbar height ke according adjust */
-    left: 0;
-    width: 220px;
-    background: rgba(0, 176, 155, 0.95);
-    padding: 15px;
-    border-radius: 0 12px 12px 0;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
-  }
-
-  .navbar-nav {
-    align-items: flex-start !important;
-  }
-}
-/* SIDEBAR */
-.sidebar {
-  position: fixed;
-  top: 0 !important;
-  left: -260px;
-  width: 260px;
-  height: 100vh;
-  background: rgba(255, 255, 255, 0.712);
- backdrop-filter: blur(12px);
-  
-  z-index: 10000;
-  transition: left 0.3s ease;
-  padding: 20px;
-  overflow-y: auto;
-  
-}
-
-.sidebar.active {
-  left: 0;
-}
-
-/* Sidebar links */
-.sidebar a {
-  display: block;
-  padding: 12px 0;
-  color: #333;
-  font-weight: 500;
-  border-bottom: 1px solid #eee;
-}
-
-/* Overlay */
-#overlay {
-  position:fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 9999;
-  backdrop-filter: blur(1px);
-  display: none;
-}
-
-#overlay.active {
-  display: block;
-}
-
-    .report-hero {
-      background: linear-gradient(90deg, #5dc9e6 30%, #b8ffe1 100%);
-      border-radius: 34px;
-      box-shadow: 0 7px 44px #19dba726, 0 2px 12px #86f7de35;
-      text-align: center;
-      padding: 46px 20px 38px 20px;
-      margin: 34px auto 42px auto;
-      position:relative;
-      overflow:hidden;
-    }
-    .report-title {
-      font-size: 2.5rem; font-weight: 800;
-      letter-spacing: 1.5px;
-      color: transparent;
-      background: linear-gradient(90deg,#21c16b 10%, #3379ff 68%);
-      background-clip:text; -webkit-background-clip:text;
-    }
-    .report-hero-slogan {
-      font-weight: 700; color: #3b4855;
-      font-size: 1.1rem;
-      margin: 0 auto 9px auto;
-      max-width: 780px;
-    }
-    .report-cards-row { margin-top: 15px; }
-
-    .report-card {
-      border-radius: 20px;
-      background: linear-gradient(105deg,#fff 80%,#bafff1 100%);
-      box-shadow: 0 12px 36px #65ffd82b;
-      min-height: 195px;
-      transition: box-shadow .46s cubic-bezier(.29,.78,.32,1), transform .36s;
-      border:none;
-      padding: 27px 22px 17px 22px;
-      text-align: center;
-      margin-bottom: 16px;
-      overflow: hidden;
-      opacity: 0; transform: translateY(40px) scale(.97);
-      animation: cardPopFadeIn 1.25s forwards;
-      animation-delay: var(--fade-delay, 0s);
-    }
-    @keyframes cardPopFadeIn {
-      to { opacity: 1; transform: translateY(0) scale(1);}
-    }
-    .report-card .rc-icon {
-      font-size:2.3rem;
-      margin-bottom: 8px;
-      color: #20c997;
-      transition: color 0.4s, transform 0.4s;
-    }
-    .report-card:hover .rc-icon {
-      color: #2972e7;
-      transform: scale(1.15) rotate(-8deg);
-    }
-    .rc-label {font-size: 1.05rem; font-weight:700;}
-    .rc-value {font-size: 1.45rem; font-weight:800; letter-spacing:1.2px; color: #1b6d4f;}
-    .rc-subtext {font-size:.9rem;color:#4d6d63;}
-
-    .progress, .progress-bar {
-      transition: width 1.5s cubic-bezier(.26,1.09,.36,.88);
-      height:1.07rem;
-      border-radius: 22px;
-      box-shadow:0 2px 6px #52ffc448;
-    }
-
-    .badge-achievement {
-      background: linear-gradient(95deg,#ffd694 40%,#fffd8b 99%);
-      color: #7c6604;
-      font-weight: 700;
-      font-size: 1.05rem;
-      border-radius: 18px;
-      box-shadow: 0 7px 20px #fff07b2a;
-      margin:0 7px 9px 7px;
-      padding: 9px 20px;
-      display: inline-block;
-      animation: popBadge .85s cubic-bezier(.26,1.09,.36,.88) backwards;
-    }
-    @keyframes popBadge {
-      0% { transform: scale(0.4) rotate(-10deg); opacity: 0;}
-      76%{opacity:1}
-      100% { transform: scale(1) rotate(3deg);}
-    }
-
-    .report-table th, .report-table td { 
-      text-align: center; font-size: 1.0rem; vertical-align: middle;
-      background:rgba(217,255,239,0.42);
-      border-bottom: 1.4px solid #eff6f2;
-    }
-    .report-table th {
-      background: linear-gradient(96deg,#29e7b0 25%,#c7fff1 100%);
-      color: #06473a; font-size:1.05rem;
-      letter-spacing:.4px; font-weight: 700;
-    }
-    .report-section-title {
-      font-size: 1.45rem;
-      font-weight: 700;
-      letter-spacing: 0.6px;
-      color: #269c6a;
-      margin: 30px 0 18px 0;
-      text-align:center;
-    }
-
-   .progress-ring {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  margin: auto;
-}
-
-.progress-ring svg {
-  transform: rotate(-90deg);
-}
-
-.progress-ring circle {
-  fill: none;
-  stroke-width: 10;
-  stroke-linecap: round;
-}
-
-.progress-ring .bg {
-  stroke: #e6e6e6;
-}
-
-.progress-ring .progress {
-  stroke: url(#gradient);
-  stroke-dasharray: 314;
-  stroke-dashoffset: 314;
-  transition: stroke-dashoffset 1.5s ease;
-}
-
-/* Gradient color */
-.progress-ring svg defs {
-  display: none;
-}
-
-.progress-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #0072ff;
-}
+    :root{--bg:#f4f8f4;--panel:rgba(255,255,255,.8);--line:rgba(18,54,42,.08);--text:#14372c;--muted:#638073;--accent:#10b981;--accent2:#0f766e;--amber:#f59e0b;--shadow:0 24px 60px rgba(16,65,50,.11);--r1:30px;--r2:22px;--r3:16px}
+    *{box-sizing:border-box;transition:all .22s ease}
+    body{margin:0;min-height:100vh;font-family:'Manrope',sans-serif;color:var(--text);background:radial-gradient(circle at top left,rgba(16,185,129,.14),transparent 28%),radial-gradient(circle at bottom right,rgba(250,204,21,.14),transparent 22%),linear-gradient(180deg,#fbfffd 0%,#eef8f3 42%,#f6fbf8 100%)}
+    a{text-decoration:none}
+    .navbar{backdrop-filter:blur(12px);background:rgba(0,176,155,.75)!important;border-bottom:1px solid rgba(255,255,255,.2)}
+    #Brandname{font-size:1.8rem;font-weight:800;color:#fff;font-family:'Space Grotesk',sans-serif}
+    .navbar-nav .nav-link:hover{background-color:rgba(236,240,30,.5);color:#fff;transform:scale(1.05);border:2px solid #fff;box-shadow:0 4px 15px rgba(25,135,84,.6)}
+    .navbar .btn:hover{background:#ebee4c;color:#fff;transform:scale(1.05);box-shadow:0 4px 15px rgba(25,135,84,.6)}
+    .navbar-brand img{width:90px;height:80px;border-radius:35%;margin-right:10px;object-fit:cover;background:linear-gradient(90deg,#00b09b,#96c93d,#00d4aa,#a8e637)}
+    @media (max-width:768px){.navbar-collapse{position:absolute;top:0;left:0;width:220px;background:rgba(0,176,155,.95);padding:15px;border-radius:0 12px 12px 0;box-shadow:2px 0 10px rgba(0,0,0,.3)}.navbar-nav{align-items:flex-start!important}}
+    .sidebar{position:fixed;top:0!important;left:-260px;width:260px;height:100vh;background:rgba(255,255,255,.8);backdrop-filter:blur(12px);z-index:10000;transition:left .3s ease;padding:20px;overflow-y:auto}
+    .sidebar.active{left:0}
+    .sidebar a{display:block;padding:12px 0;color:#26362f;font-weight:600;border-bottom:1px solid #edf3ef}
+    #overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.38);z-index:9999;backdrop-filter:blur(1px);display:none}
+    #overlay.active{display:block}
+    .shell{width:min(1280px,calc(100% - 28px));margin:24px auto 50px}
+    .hero,.card,.panel{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(14px)}
+    .hero{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.9fr);gap:20px;padding:28px;border-radius:var(--r1);background:linear-gradient(135deg,rgba(16,185,129,.16),rgba(255,255,255,.92) 42%,rgba(15,118,110,.10))}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(16,185,129,.1);color:var(--accent2);font-size:.82rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .hero h1,.panel h2{font-family:'Space Grotesk',sans-serif}
+    .hero h1{margin:16px 0 10px;font-size:clamp(2rem,4vw,3.3rem);line-height:1.02}
+    .hero p{margin:0;color:var(--muted);font-size:1rem}
+    .chips{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+    .chip{min-width:160px;padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.72);border:1px solid rgba(16,55,43,.07)}
+    .chip span,.mini-label{display:block;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:800;margin-bottom:6px}
+    .chip strong{font-size:1.05rem;font-weight:800}
+    .sidecol{display:grid;gap:16px}
+    .orb{background:linear-gradient(145deg,#0f766e,#10b981);color:#fff;border-radius:28px;padding:24px;min-height:250px}
+    .ring{--p:0;width:166px;height:166px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(from 220deg,#facc15 calc(var(--p) * 1%),rgba(255,255,255,.18) 0);position:relative}
+    .ring:after{content:"";position:absolute;inset:16px;border-radius:50%;background:linear-gradient(180deg,rgba(11,84,69,.96),rgba(19,116,92,.96))}
+    .ring-content{position:relative;z-index:1;text-align:center}
+    .ring-content strong{display:block;font:700 2.15rem 'Space Grotesk',sans-serif;line-height:1}
+    .ring-content span{color:rgba(255,255,255,.8);font-size:.92rem}
+    .note{border-radius:20px;padding:18px;background:rgba(255,255,255,.82);border:1px solid rgba(16,55,43,.08)}
+    .note strong{display:block;font-size:1.1rem;margin-bottom:6px}
+    .stats{margin-top:20px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+    .card{padding:22px;border-radius:var(--r2)}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    .icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgba(16,185,129,.1);color:var(--accent2);font-size:1.15rem}
+    .value{font:700 clamp(1.8rem,3vw,2.35rem)/1 'Space Grotesk',sans-serif;margin-bottom:8px}
+    .sub{margin:0;color:var(--muted);font-size:.95rem}
+    .grid{margin-top:20px;display:grid;grid-template-columns:minmax(0,1.65fr) minmax(320px,.95fr);gap:16px}
+    .main,.side{display:grid;gap:16px;align-content:start}
+    .panel{padding:24px;border-radius:var(--r2)}
+    .head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+    .kicker{color:var(--accent2);font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin-bottom:6px}
+    .panel h2{font-size:1.35rem;margin:0}
+    .helper{margin:6px 0 0;color:var(--muted);font-size:.95rem}
+    .chart-wrap{height:360px}
+    .stack{display:grid;gap:14px}
+    .target{padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.8);border:1px solid rgba(16,55,43,.07)}
+    .target-top,.rowline,.log-top{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+    .track{width:100%;height:12px;border-radius:999px;background:#e8f1ec;overflow:hidden;margin-top:10px}
+    .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#10b981,#0ea5e9);width:0}
+    .fill.warn{background:linear-gradient(90deg,#f59e0b,#facc15)}
+    .fill.soft{background:linear-gradient(90deg,#14b8a6,#10b981)}
+    .list{display:grid;gap:12px}
+    .rowline{padding:14px 0;border-bottom:1px solid rgba(19,50,41,.08)}
+    .rowline:last-child{border-bottom:none;padding-bottom:0}
+    .rowline span,.target-top span,.log-top span{color:var(--muted);font-weight:700}
+    .formgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    .field{background:rgba(255,255,255,.82);border:1px solid rgba(16,55,43,.07);border-radius:18px;padding:16px}
+    .field label{display:block;font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:10px}
+    .field input{min-height:52px;border-radius:14px;border:1px solid rgba(16,55,43,.1);box-shadow:none!important;font-weight:700}
+    .savewrap{display:flex;flex-direction:column;justify-content:flex-end}
+    .savebtn{min-height:54px;border:none;border-radius:16px;background:linear-gradient(135deg,#0f766e,#10b981);color:#fff;font-weight:800;box-shadow:0 18px 30px rgba(16,185,129,.22)}
+    .feedback{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:rgba(16,185,129,.1);color:var(--accent2);font-weight:800;font-size:.9rem;visibility:hidden}
+    .feedback.show{visibility:visible}
+    .log{padding:16px;border-radius:18px;background:rgba(255,255,255,.82);border:1px solid rgba(16,55,43,.07)}
+    .pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .pill{display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;background:rgba(15,118,110,.09);color:var(--accent2);font-weight:800;font-size:.84rem}
+    .empty{padding:20px;border-radius:18px;border:1px dashed rgba(16,55,43,.18);background:rgba(255,255,255,.65);color:var(--muted);text-align:center}
+    @media (max-width:1100px){.hero,.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:780px){.shell{width:min(100%,calc(100% - 18px))}.hero,.card,.panel{padding:20px}.stats,.formgrid{grid-template-columns:1fr}.chart-wrap{height:300px}}
   </style>
 </head>
 <body>
-  <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg shadow-sm sticky-top"
-     style="background: linear-gradient(90deg, #00b09b, #96c93d);">
-
-  <div class="container py-2 d-flex align-items-center justify-content-between">
-
-    <!-- LEFT SIDE -->
-    <div class="d-flex align-items-center">
-
-      <!-- ✅ MENU BUTTON LEFT -->
-      <button id="menuBtn" class="navbar-toggler border-0 text-white me-2" type="button">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- LOGO -->
-      <a class="navbar-brand d-flex align-items-center text-white fw-bold m-0"
-         href="/home">
-        <img src="{{ url_for('static', filename='images/logo.png') }}">
-      </a>
-
-      <!-- BRAND -->
-      <span id="Brandname">FitMeal</span>
-
+  <nav class="navbar navbar-expand-lg shadow-sm sticky-top" style="background:linear-gradient(90deg,#00b09b,#96c93d)">
+    <div class="container py-2 d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center">
+        <button id="menuBtn" class="navbar-toggler border-0 text-white me-2" type="button"><span class="navbar-toggler-icon"></span></button>
+        <a class="navbar-brand d-flex align-items-center text-white fw-bold m-0" href="/home"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="FitMeal logo"></a>
+        <span id="Brandname">FitMeal</span>
+      </div>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/home">Home</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/preferences">Preferences</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/recipes">Recipes</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/mealplan">Meal Plan</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/chat">Chatbot</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold active" href="/report">Report</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/about">About</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/contact">Contact</a></li>
+          <li class="nav-item ms-3"><a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a></li>
+        </ul>
+      </div>
     </div>
+  </nav>
 
-    <!-- RIGHT SIDE NAV -->
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav align-items-center">
-        <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/home">Home</a></li>
-        <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/preferences">Preferences</a></li>
-        <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/recipes">Recipes</a></li>
-        <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold active" href="/mealplan">Meal Plan</a></li>
-    <li class="nav-item ms-3">
-          <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a>
-        </li>
-        <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/report">Report</a></li>
-        <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/about">About</a></li>
-        <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/contact">Contact</a></li>
-        <li class="nav-item ms-3">
-          <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a>
-        </li>
-      </ul>
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-content">
+      <h5 class="mb-4 fw-bold">Menu</h5>
+      <a href="/home">Home</a><a href="/preferences">Preferences</a><a href="/recipes">Recipes</a><a href="/mealplan">Meal Plan</a><a href="/chat">Chatbot</a><a href="/report">Report</a><a href="/about">About</a><a href="/contact">Contact</a>
+      <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm mt-3">Sign Up</a>
     </div>
-
   </div>
-</nav>
+  <div id="overlay"></div>
 
-  <!-- 🔥 SIDEBAR -->
-<div id="sidebar" class="sidebar">
-  <div class="sidebar-content">
-
-    <h5 class="mb-4 fw-bold">Menu</h5>
-
-    <a href="/home">Home</a>
-    <a href="/preferences">Preferences</a>
-    <a href="/recipes">Recipes</a>
-    <a href="/mealplan">Meal Plan</a>
-    
-    <a href="/chat">Chatbot</a>
-    
-    <a href="/report">Report</a>
-    <a href="/about">About</a>
-    <a href="/contact">Contact</a>
-
-          <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a>
-    
-      
-  </div>
-</div> 
-<div id="overlay"></div>
-
-  <!-- REPORT HERO SUMMARY -->
-  <div class="container">
-    <div class="report-hero mt-3">
-      <div class="report-title mb-2">Your Progress Report</div>
-      <div class="report-hero-slogan">
-        Track how consistently you’re following your plan and how close you are to your goal.
-      </div>
-      <!-- Achievement Badges (animated) -->
-      <div class="my-2">
-        <span class="badge-achievement"><i class="bi bi-graph-up-arrow"></i> On Track Streak</span>
-        <span class="badge-achievement"><i class="bi bi-fire"></i> Smart Calorie Control</span>
-        <span class="badge-achievement"><i class="bi bi-heart-pulse-fill"></i> Stronger Every Week</span>
-      </div>
-    </div>
-
-    <!-- Measurement Update Card -->
-    <div class="report-form-card mt-3 mb-4">
-      <div class="report-section-title mb-3">Update Today’s Measurements</div>
-      <form id="progressForm" class="row g-3 justify-content-center">
-        <div class="col-md-2">
-          <label class="form-label">Current Weight (kg)</label>
-          <input type="number" step="0.1" min="20" max="200" class="form-control" id="currentWeightInput" required>
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Waist (inches)</label>
-          <input type="number" class="form-control" id="waistInput">
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Chest (inches)</label>
-          <input type="number" class="form-control" id="chestInput">
-        </div>
-        <div class="col-md-2 d-flex align-items-end">
-          <button type="submit" class="btn btn-success w-100">
-            Save & Refresh Graph
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <!-- SUMMARY METRIC CARDS -->
-    <div class="row report-cards-row gx-4 gy-4 justify-content-center">
-      <div class="col-md-4">
-        <div class="report-card" style="--fade-delay: .10s;">
-          <div class="rc-icon"><i class="bi bi-calendar-check"></i></div>
-          <div class="rc-label">Days Following Plan</div>
-          <div class="rc-value" id="daysValue">-- days</div>
-          <div class="rc-subtext">Consistency towards your goal.</div>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="eyebrow"><i class="bi bi-stars"></i> Progress Dashboard</div>
+        <h1>A modern report page that feels like a real fitness app.</h1>
+        <p>Weight trend, body measurements, daily targets, and latest check-ins are all visible in one cleaner dashboard.</p>
+        <div class="chips">
+          <div class="chip"><span>Current Goal</span><strong>{{ progress.goal }}</strong></div>
+          <div class="chip"><span>Daily Calories</span><strong>{{ progress.calorieGoal }} kcal</strong></div>
+          <div class="chip"><span>Protein Target</span><strong>{{ progress.proteinGoal }} g</strong></div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="report-card" style="--fade-delay:.22s;">
-          <div class="rc-icon"><i class="bi bi-tape"></i></div>
-          <div class="rc-label">Body Progress</div>
-          <div class="rc-value" id="bodySummary">-- kg</div>
-          <div class="rc-subtext" id="bodyDetail">Waist -- cm · Chest -- cm</div>
+      <div class="sidecol">
+        <div class="orb">
+          <div class="ring" id="goalRing"><div class="ring-content"><strong id="goalPercent">0%</strong><span>Goal progress</span></div></div>
+          <p id="goalNarrative" class="mb-0 text-center text-white-50">Building your latest summary...</p>
+        </div>
+        <div class="note">
+          <span class="mini-label">Latest Check-In</span>
+          <strong id="lastCheckInText">{{ progress.lastCheckIn or 'No check-in yet' }}</strong>
+          <p id="heroDeltaText" class="mb-0 text-secondary">The dashboard updates from your saved measurements.</p>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="report-card" style="--fade-delay:.34s;">
-          <div class="rc-icon"><i class="bi bi-bullseye"></i></div>
-          <div class="rc-label">Goal Progress (Today)</div>
-          <div class="progress-ring">
-            <svg width="120" height="120">
-              <defs>
-  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-    <stop offset="0%" stop-color="#00c6ff"/>
-    <stop offset="100%" stop-color="#0072ff"/>
-  </linearGradient>
-</defs>
-              <circle cx="60" cy="60" r="50" class="bg"></circle>
-              <circle cx="60" cy="60" r="50" class="progress" id="progressCircle"></circle>
-            </svg>
-            <div class="progress-text" id="goalPercent">0%</div>
+    </section>
+
+    <section class="stats">
+      <article class="card"><div class="top"><div class="mini-label">Current Weight</div><div class="icon"><i class="bi bi-activity"></i></div></div><div class="value" id="currentWeightCard">-- kg</div><p class="sub">Latest recorded body weight.</p></article>
+      <article class="card"><div class="top"><div class="mini-label">Change Since Start</div><div class="icon"><i class="bi bi-arrow-left-right"></i></div></div><div class="value" id="weightChangeCard">-- kg</div><p class="sub" id="weightChangeNote">Comparing current and starting check-ins.</p></article>
+      <article class="card"><div class="top"><div class="mini-label">Goal Weight</div><div class="icon"><i class="bi bi-bullseye"></i></div></div><div class="value" id="goalWeightCard">-- kg</div><p class="sub">Adaptive target based on your goal.</p></article>
+      <article class="card"><div class="top"><div class="mini-label">BMI Snapshot</div><div class="icon"><i class="bi bi-heart-pulse"></i></div></div><div class="value" id="bmiCard">--</div><p class="sub" id="bmiNote">Calculated from latest weight and height.</p></article>
+    </section>
+
+    <section class="grid">
+      <div class="main">
+        <article class="panel">
+          <div class="head"><div><div class="kicker">Weight Journey</div><h2>See the trend over time</h2><p class="helper">Actual weight vs target line in a cleaner chart.</p></div></div>
+          <div class="chart-wrap"><canvas id="weightChart"></canvas></div>
+        </article>
+        <article class="panel">
+          <div class="head"><div><div class="kicker">Daily Check-In</div><h2>Log today’s progress</h2><p class="helper">Enter weight in kg, waist/chest in inches. Measurements are converted automatically.</p></div><div id="formFeedback" class="feedback"><i class="bi bi-check2-circle"></i> Saved</div></div>
+          <form id="progressForm" class="formgrid">
+            <div class="field"><label for="currentWeightInput">Current Weight (kg)</label><input type="number" step="0.1" min="20" max="200" class="form-control" id="currentWeightInput" required></div>
+            <div class="field"><label for="waistInput">Waist (inches)</label><input type="number" step="0.1" class="form-control" id="waistInput"></div>
+            <div class="field"><label for="chestInput">Chest (inches)</label><input type="number" step="0.1" class="form-control" id="chestInput"></div>
+            <div class="savewrap"><button type="submit" class="savebtn" id="saveProgressBtn">Save Check-In</button></div>
+          </form>
+        </article>
+      </div>
+
+      <div class="side">
+        <article class="panel">
+          <div class="head"><div><div class="kicker">Target Dashboard</div><h2>Your daily focus areas</h2></div></div>
+          <div class="stack">
+            <div class="target"><div class="target-top"><strong>Goal completion</strong><span id="goalCompletionText">0%</span></div><div class="track"><div class="fill" id="goalProgressBar"></div></div></div>
+            <div class="target"><div class="target-top"><strong>Plan consistency</strong><span id="consistencyText">0 days</span></div><div class="track"><div class="fill soft" id="consistencyBar"></div></div></div>
+            <div class="target"><div class="target-top"><strong>Calorie target</strong><span>{{ progress.calorieGoal }} kcal</span></div><div class="track"><div class="fill warn" id="calorieBar"></div></div></div>
+            <div class="target"><div class="target-top"><strong>Protein target</strong><span>{{ progress.proteinGoal }} g</span></div><div class="track"><div class="fill" id="proteinBar"></div></div></div>
           </div>
-          <div class="rc-subtext" id="goalText"></div>
-        </div>
+        </article>
+
+        <article class="panel">
+          <div class="head"><div><div class="kicker">Profile Snapshot</div><h2>Body & lifestyle context</h2></div></div>
+          <div class="list">
+            <div class="rowline"><span>Age</span><strong>{{ user.age }}</strong></div>
+            <div class="rowline"><span>Height</span><strong>{{ progress.heightCm }} cm</strong></div>
+            <div class="rowline"><span>Diet Type</span><strong>{{ user.diet }}</strong></div>
+            <div class="rowline"><span>Activity Level</span><strong id="activityValue">--</strong></div>
+            <div class="rowline"><span>Waist</span><strong id="waistValue">--</strong></div>
+            <div class="rowline"><span>Chest</span><strong id="chestValue">--</strong></div>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="head"><div><div class="kicker">Recent Check-Ins</div><h2>Your latest entries</h2></div></div>
+          <div id="recentLogs"></div>
+        </article>
       </div>
-    </div>
+    </section>
+  </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const progress={{ progress|tojson|safe }}, user={{ user|tojson|safe }}, logs={{ logs|tojson|safe }}, dates={{ dates|tojson|safe }}, weights={{ weights|tojson|safe }};
+    const navLinks=document.querySelectorAll('.nav-link'), navbarCollapse=document.querySelector('.navbar-collapse');
+    navLinks.forEach(link=>link.addEventListener('click',()=>{if(navbarCollapse&&navbarCollapse.classList.contains('show')) new bootstrap.Collapse(navbarCollapse).hide()}));
+    const menuBtn=document.getElementById("menuBtn"), sidebar=document.getElementById("sidebar"), overlay=document.getElementById("overlay");
+    menuBtn.addEventListener("click",()=>{sidebar.classList.add("active");overlay.classList.add("active");document.body.style.overflow="hidden"});
+    overlay.addEventListener("click",()=>{sidebar.classList.remove("active");overlay.classList.remove("active");document.body.style.overflow="auto"});
 
-  <div class="container mb-5">
-    <div class="report-section-title">Weight Progress</div>
-    <div class="report-form-card">
-    <canvas id="weightChart" height="120"></canvas>
-    </div>
-  </div>
+    const num=v=>{const n=Number(v);return Number.isNaN(n)?0:n};
+    const fmt=(v,u="",d=1)=>{if(v===null||v===undefined||v==="") return "--"; const n=Number(v); if(Number.isNaN(n)) return `${v}${u?` ${u}`:""}`; const f=Number.isInteger(n)?n.toString():n.toFixed(d); return u?`${f} ${u}`:f};
+    const activity=v=>{const n=num(v); if(n>=1.9) return "Extra active"; if(n>=1.725) return "Very active"; if(n>=1.55) return "Moderately active"; if(n>=1.375) return "Lightly active"; return "Sedentary"};
+    const bmiText=v=>{const n=num(v); if(!n) return "BMI unavailable"; if(n<18.5) return "Underweight range"; if(n<25) return "Healthy range"; if(n<30) return "Overweight range"; return "Obese range"};
+    function goalPercent(){const s=num(progress.startWeight), c=num(progress.currentWeight)||s, g=num(progress.goalWeight)||s, t=Math.abs(g-s); if(!t) return 100; const covered=g<s?s-c:c-s; return Math.max(0,Math.min(100,Math.round((covered/t)*100)))}
 
-<script>
- // Navbar auto close on click
-const navLinks = document.querySelectorAll('.nav-link');
-const navbarCollapse = document.querySelector('.navbar-collapse');
-
-navLinks.forEach(link => {
-  link.addEventListener('click', () => {
-    if (navbarCollapse.classList.contains('show')) {
-      new bootstrap.Collapse(navbarCollapse).hide();
+    function buildSummary(){
+      const gp=goalPercent(), current=num(progress.currentWeight), goal=num(progress.goalWeight), diff=Math.abs(current-goal).toFixed(1);
+      document.getElementById("goalRing").style.setProperty("--p",gp);
+      document.getElementById("goalPercent").textContent=`${gp}%`;
+      document.getElementById("goalCompletionText").textContent=`${gp}%`;
+      document.getElementById("goalNarrative").textContent=current===goal?"You have reached your current target weight.":`You are ${diff} kg away from your target weight.`;
+      document.getElementById("lastCheckInText").textContent=progress.lastCheckIn||"No check-in yet";
+      document.getElementById("heroDeltaText").textContent=num(progress.weightChange)===0?"Weight is steady since the first check-in.":`Weight change since start: ${fmt(progress.weightChange,"kg")}`;
+      document.getElementById("currentWeightCard").textContent=fmt(progress.currentWeight,"kg");
+      document.getElementById("goalWeightCard").textContent=fmt(progress.goalWeight,"kg");
+      document.getElementById("bmiCard").textContent=fmt(progress.bmi,"",1);
+      document.getElementById("bmiNote").textContent=bmiText(progress.bmi);
+      const wc=num(progress.weightChange), prefix=wc>0?"+":"";
+      document.getElementById("weightChangeCard").textContent=`${prefix}${fmt(wc,"kg")}`;
+      document.getElementById("weightChangeNote").textContent=wc>0?"Weight is trending upward from the start.":wc<0?"Weight is trending downward from the start.":"No change from the starting check-in yet.";
+      document.getElementById("goalProgressBar").style.width=`${gp}%`;
+      document.getElementById("consistencyText").textContent=`${num(progress.daysFollowing)} days`;
+      document.getElementById("consistencyBar").style.width=`${Math.min(100,num(progress.daysFollowing)*8)}%`;
+      document.getElementById("calorieBar").style.width=`${Math.min(100,Math.max(18,num(progress.calorieGoal)/28))}%`;
+      document.getElementById("proteinBar").style.width=`${Math.min(100,Math.max(18,num(progress.proteinGoal)))}%`;
+      document.getElementById("activityValue").textContent=activity(progress.activity||user.activity);
+      document.getElementById("waistValue").textContent=fmt(progress.waist,"cm");
+      document.getElementById("chestValue").textContent=fmt(progress.chest,"cm");
     }
-  });
-});
 
-// sidebar open-close fix
-const menuBtn = document.getElementById("menuBtn");
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
-
-menuBtn.addEventListener("click", () => {
-  sidebar.classList.add("active");
-  overlay.classList.add("active");
-  document.body.style.overflow = "hidden"; // 🔥 scroll lock
-});
-
-overlay.addEventListener("click", () => {
-  sidebar.classList.remove("active");
-  overlay.classList.remove("active");
-  document.body.style.overflow = "auto"; // 🔥 unlock
-});
-
-
-const dates = {{ dates | tojson | safe }};
-const weights = {{ weights | tojson | safe }};
-  const startWeight = {{ progress.startWeight }};
-const goalWeight = {{ user.weight }};
-
-// Plot ke liye transform
-// Transform weights relative to startWeight (so increase goes up)
-const plotWeights = weights.map(w => w - {{ progress.startWeight }});
-
-const ctx = document.getElementById('weightChart').getContext('2d');
-const weightChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: dates,
-        datasets: [{
-            label: 'Weight Change (kg)',
-            data: plotWeights,
-            borderColor: '#20c997',
-            backgroundColor: 'rgba(32, 201, 151, 0.1)',
-            fill: true,
-            tension: 0.3,
-            pointRadius: 3,
-            pointHoverRadius: 6,
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            x: { 
-                title: { display: true, text: 'Date' } 
-            },
-            y: { 
-                title: { display: true, text: 'Weight Change (kg)' }, 
-                beginAtZero: false 
-            }
-        },
-        plugins: {
-            annotation: {
-                annotations: {
-                    goalLine: {
-                        type: 'line',
-                        yMin: {{ user.weight }} - {{ progress.startWeight }},
-                        yMax: {{ user.weight }} - {{ progress.startWeight }},
-                        borderColor: 'red',
-                        borderWidth: 2,
-                        label: { content: 'Goal', enabled: true, position: 'start' }
-                    }
-                }
-            }
-        }
+    function buildLogs(){
+      const box=document.getElementById("recentLogs"), recent=[...logs].reverse().slice(0,5);
+      if(!recent.length){box.innerHTML=`<div class="empty">No progress entries yet. Save your first check-in to start building this dashboard.</div>`; return}
+      box.innerHTML=recent.map(entry=>`<article class="log"><div class="log-top"><strong>${entry.date||"Check-in"}</strong><span>${fmt(entry.weight,"kg")}</span></div><div class="pills"><span class="pill">Waist: ${fmt(entry.waist,"cm")}</span><span class="pill">Chest: ${fmt(entry.chest,"cm")}</span></div></article>`).join("");
     }
-});
-  // Populate summary cards with passed data
-  document.getElementById('daysValue').innerText = '{{ progress.daysFollowing }} days';
-  document.getElementById('bodySummary').innerText = `{{ progress.currentWeight }} kg`;
-  document.getElementById('bodyDetail').innerText = `Waist {{ progress.waist }} in · Chest {{ progress.chest }} in`;
-// 🔹 safer calculation
-let rawPercent = (({{ progress.startWeight }} - {{ progress.currentWeight }}) / ({{ progress.startWeight }} - {{ user.weight }}) * 100);
 
-// Prevent negative progress if weight increased
-const goalPercent = Math.max(0, Math.min(100, Math.round(rawPercent)));
-
-const circle = document.getElementById("progressCircle");
-const radius = 50;
-const circumference = 2 * Math.PI * radius;
-
-circle.style.strokeDasharray = circumference;
-
-const offset = circumference - (goalPercent / 100) * circumference;
-
-setTimeout(() => {
-    circle.style.strokeDashoffset = offset;
-}, 200);
-
-document.getElementById("goalPercent").innerText = goalPercent + "%";
-
-// 🔹 optional: show message if weight increased
-const goalTextEl = document.getElementById('goalText');
-if(rawPercent < 0) {
-    goalTextEl.innerText = "Weight increased! Goal behind.";
-    circle.style.stroke = "#ff4d4d"; // red color for negative
-} else {
-    goalTextEl.innerText = `Progress towards goal (${goalPercent}%)`;
-    circle.style.stroke = "url(#gradient)"; // normal gradient
-}
-
-document.getElementById("progressForm").addEventListener("submit", function() {
-
-  const waist = document.getElementById("waistInput");
-  const chest = document.getElementById("chestInput");
-
-  if (waist.value) waist.value = waist.value * 2.54;
-  if (chest.value) chest.value = chest.value * 2.54;
-
-});
-
-document.getElementById("progressForm").addEventListener("submit", function(e) {
-  e.preventDefault(); // 🔥 page reload rokega
-
-  const weight = document.getElementById("currentWeightInput").value;
-  let waist = document.getElementById("waistInput").value;
-  let chest = document.getElementById("chestInput").value;
-
-  // inches → cm convert
-  if (waist) waist = waist * 2.54;
-  if (chest) chest = chest * 2.54;
-
-  const data = {
-    date: new Date().toISOString().split("T")[0], // yyyy-mm-dd
-    weight: parseFloat(weight),
-    waist: waist ? parseFloat(waist) : null,
-    chest: chest ? parseFloat(chest) : null
-  };
-
-  // 🔥 API call
-  fetch("/api/save_progress", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  })
-  .then(res => res.json())
-  .then(res => {
-    if (res.success) {
-      alert("Progress saved!");
-      location.reload(); // 🔥 reload → graph update
+    function buildChart(){
+      const labels=dates.length?dates:[new Date().toISOString().split("T")[0]], series=weights.length?weights.map(Number):[num(progress.currentWeight)], goals=labels.map(()=>num(progress.goalWeight)||num(progress.currentWeight));
+      const ctx=document.getElementById('weightChart').getContext('2d'), gradient=ctx.createLinearGradient(0,0,0,320);
+      gradient.addColorStop(0,'rgba(16,185,129,.34)'); gradient.addColorStop(1,'rgba(16,185,129,0)');
+      new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Current Weight',data:series,borderColor:'#10b981',backgroundColor:gradient,fill:true,tension:.35,borderWidth:3,pointRadius:3,pointHoverRadius:6,pointBackgroundColor:'#0f766e'},{label:'Goal Weight',data:goals,borderColor:'#f59e0b',borderDash:[7,7],borderWidth:2,pointRadius:0,fill:false,tension:0}]},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{labels:{color:'#35594d',usePointStyle:true,boxWidth:10,boxHeight:10,padding:18,font:{family:'Manrope',weight:'700'}}},tooltip:{backgroundColor:'rgba(15,35,29,.92)',titleColor:'#fff',bodyColor:'#ebfff7',padding:12,displayColors:false}},scales:{x:{grid:{display:false},ticks:{color:'#67837a'}},y:{beginAtZero:false,grid:{color:'rgba(19,50,41,.08)'},ticks:{color:'#67837a'}}}}});
     }
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Error saving progress");
-  });
-});
-</script>
-  
+
+    function feedback(message, ok=true){const el=document.getElementById("formFeedback"); el.classList.add("show"); el.innerHTML=ok?`<i class="bi bi-check2-circle"></i> ${message}`:`<i class="bi bi-exclamation-circle"></i> ${message}`; el.style.background=ok?"rgba(16,185,129,.1)":"rgba(239,68,68,.12)"; el.style.color=ok?"var(--accent2)":"#b91c1c"}
+    document.getElementById("progressForm").addEventListener("submit",e=>{e.preventDefault(); const btn=document.getElementById("saveProgressBtn"), weight=parseFloat(document.getElementById("currentWeightInput").value); let waist=document.getElementById("waistInput").value, chest=document.getElementById("chestInput").value; if(waist) waist=parseFloat(waist)*2.54; if(chest) chest=parseFloat(chest)*2.54; btn.disabled=true; btn.textContent="Saving..."; fetch("/api/save_progress",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({date:new Date().toISOString().split("T")[0],weight,waist:waist||null,chest:chest||null})}).then(r=>r.json()).then(r=>{if(!r.success) throw new Error(); feedback("Progress saved. Refreshing dashboard..."); setTimeout(()=>location.reload(),900)}).catch(()=>{btn.disabled=false; btn.textContent="Save Check-In"; feedback("Could not save progress. Please try again.",false)})});
+    buildSummary(); buildLogs(); buildChart();
+  </script>
 </body>
 </html>
-

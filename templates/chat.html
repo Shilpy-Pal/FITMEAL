@@ -1,345 +1,757 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>FitMeal Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitMeal Chatbot</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
   <style>
-   * {
-      transition: all 0.3s ease;
-    }
-    a{
-      text-decoration: none;
-
+    * {
+      transition: all 0.25s ease;
     }
 
     body {
-      background:linear-gradient(135deg, #11998e, #38ef7d);
+      margin: 0;
+      min-height: 100vh;
       font-family: 'Poppins', sans-serif;
-      scroll-behavior: smooth;
-      
+      background:
+        radial-gradient(circle at top left, rgba(255, 238, 180, 0.42), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.30), transparent 24%),
+        linear-gradient(135deg, #0f766e, #10b981 45%, #facc15 120%);
+      color: #ffffff;
     }
+
+    a {
+      text-decoration: none;
+    }
+
     .navbar {
       backdrop-filter: blur(12px);
-      background: rgba(0, 176, 155, 0.75) !important;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
+      background: rgba(6, 78, 59, 0.74) !important;
+      border-bottom: 1px solid rgba(255,255,255,0.14);
     }
+
     #Brandname {
       font-size: 1.8rem;
       font-weight: 800;
       color: white;
-      text-shadow: none;
-    }
-    @keyframes navbarFlow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
     }
 
-    .navbar-nav .nav-link:hover {
-      background-color: #ecf01e81;
-      color: #fff;
-      transform: scale(1.1);
-      border: 2px solid white;
-      box-shadow: 0 4px 15px rgba(25, 135, 84, 0.6);
-      transition: all 0.3s ease;
-    }
+    .navbar-nav .nav-link:hover,
     .navbar .btn:hover {
-      background-color: #ebee4c;
-      color: #fff;
-      transform: scale(1.1);
-      box-shadow: 0 4px 15px rgba(25, 135, 84, 0.6);
-      transition: all 0.3s ease;
+      transform: translateY(-1px) scale(1.02);
     }
-    
+
     .navbar-brand img {
       width: 90px;
       height: 80px;
       border-radius: 35%;
       margin-right: 10px;
+      object-fit: cover;
       background: linear-gradient(90deg, #00b09b, #96c93d, #00d4aa, #a8e637);
       background-size: 300% 300%;
-     
-  
-      transition:transform 0.3s ease;
     }
-    .navbar-brand img:hover {
-   transform: perspective(300px) rotateY(10deg) scale(1.1);
-}
 
-@keyframes move {
-  from {
-    top: 0;
-    left: 0;
-  }
-  to {
-    top: 0;
-    left: 100%;
-  }
-}  
-  @media (max-width: 768px) {
-  .navbar-collapse {
-    position: absolute;
-    top: 0; /* navbar height ke according adjust */
-    left: 0;
-    width: 220px;
-    background: rgba(0, 176, 155, 0.95);
-    padding: 15px;
-    border-radius: 0 12px 12px 0;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
-  }
+    @media (max-width: 768px) {
+      .navbar-collapse {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 220px;
+        background: rgba(0, 176, 155, 0.95);
+        padding: 15px;
+        border-radius: 0 12px 12px 0;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+      }
 
-  .navbar-nav {
-    align-items: flex-start !important;
-  }
-}
-/* SIDEBAR */
-.sidebar {
-  position: fixed;
-  top: 0 !important;
-  left: -260px;
-  width: 260px;
-  height: 100vh;
-  background: rgba(255, 255, 255, 0.712);
- backdrop-filter: blur(12px);
-  
-  z-index: 10000;
-  transition: left 0.3s ease;
-  padding: 20px;
-  overflow-y: auto;
-  
-}
+      .navbar-nav {
+        align-items: flex-start !important;
+      }
+    }
 
-.sidebar.active {
-  left: 0;
-}
+    .sidebar {
+      position: fixed;
+      top: 0 !important;
+      left: -260px;
+      width: 260px;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(12px);
+      z-index: 10000;
+      transition: left 0.3s ease;
+      padding: 20px;
+      overflow-y: auto;
+    }
 
-/* Sidebar links */
-.sidebar a {
-  display: block;
-  padding: 12px 0;
-  color: #333;
-  font-weight: 500;
-  border-bottom: 1px solid #eee;
-}
+    .sidebar.active {
+      left: 0;
+    }
 
-/* Overlay */
-#overlay {
-  position:fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 9999;
-  backdrop-filter: blur(1px);
-  display: none;
-}
+    .sidebar a {
+      display: block;
+      padding: 12px 0;
+      color: #1f2937;
+      font-weight: 500;
+      border-bottom: 1px solid #e5e7eb;
+    }
 
-#overlay.active {
-  display: block;
-}
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 9999;
+      backdrop-filter: blur(1px);
+      display: none;
+    }
 
+    #overlay.active {
+      display: block;
+    }
 
+    .page-shell {
+      width: min(1200px, calc(100% - 32px));
+      margin: 32px auto 48px;
+      display: grid;
+      grid-template-columns: 380px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
 
-h1 {
-  text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-#chatContainer {
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    max-width: 600px;
-    margin: 40px auto;
-    color: #fff;
-  }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 24px 60px rgba(3, 22, 18, 0.22);
+      backdrop-filter: blur(16px);
+      border-radius: 24px;
+    }
 
-  #chatOutput {
-    background: rgba(0,0,0,0.2);
-    padding: 15px;
-    border-radius: 10px;
-    min-height: 250px;
-    max-height: 400px;
-    overflow-y: auto;
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.95rem;
-  }
+    .chat-panel {
+      padding: 20px;
+      position: sticky;
+      top: 98px;
+    }
 
-  #chatInputContainer {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.16);
+      padding: 8px 12px;
+      font-size: 0.83rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
 
-  #chatInput {
-    flex: 1;
-    border-radius: 50px;
-    padding: 10px 20px;
-    border: none;
-    outline: none;
-  }
+    .chat-title {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 800;
+      line-height: 1.05;
+      margin: 16px 0 10px;
+    }
 
-  #chatInput:focus {
-    box-shadow: 0 0 8px #00ff90;
-  }
+    .chat-subtitle {
+      color: rgba(255,255,255,0.82);
+      margin-bottom: 18px;
+    }
 
-  #chatOutput .user-msg {
-    background: #00b09b;
-    padding: 8px 12px;
-    border-radius: 12px;
-    margin: 5px 0;
-    display: inline-block;
-  }
+    #chatOutput {
+      min-height: 260px;
+      max-height: 340px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.16);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
 
-  #chatOutput .bot-msg {
-    background: #38ef7d;
-    padding: 8px 12px;
-    border-radius: 12px;
-    margin: 5px 0;
-    display: inline-block;
-  }
-</style>
+    .message {
+      max-width: 88%;
+      padding: 12px 14px;
+      border-radius: 18px;
+      margin-bottom: 12px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .message.user {
+      margin-left: auto;
+      background: linear-gradient(135deg, #14b8a6, #22c55e);
+      color: #f8fffb;
+      border-bottom-right-radius: 6px;
+    }
+
+    .message.bot {
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      border-bottom-left-radius: 6px;
+    }
+
+    #chatInputContainer {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #chatInput {
+      flex: 1;
+      border-radius: 999px;
+      padding: 14px 18px;
+      border: 1px solid rgba(255,255,255,0.16);
+      outline: none;
+      background: rgba(255,255,255,0.16);
+      color: #ffffff;
+    }
+
+    #chatInput::placeholder {
+      color: rgba(255,255,255,0.72);
+    }
+
+    #chatInput:focus {
+      box-shadow: 0 0 0 3px rgba(253, 224, 71, 0.22);
+    }
+
+    .send-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #facc15, #f59e0b);
+      color: #163300;
+      font-weight: 700;
+    }
+
+    .results-panel {
+      padding: 24px;
+    }
+
+    .results-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .results-head h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .results-head p {
+      margin: 0;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .download-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      background: rgba(255,255,255,0.14);
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    }
+
+    .empty-state {
+      border: 1px dashed rgba(255,255,255,0.25);
+      border-radius: 22px;
+      padding: 28px;
+      text-align: center;
+      color: rgba(255,255,255,0.86);
+      background: rgba(0,0,0,0.12);
+    }
+
+    .plan-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .meta-tile {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.11);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .meta-tile small {
+      display: block;
+      color: rgba(255,255,255,0.68);
+      margin-bottom: 4px;
+    }
+
+    .plan-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 18px;
+    }
+
+    .meal-card {
+      background: rgba(255,255,255,0.11);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 24px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .meal-image-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(20,184,166,0.28), rgba(250,204,21,0.24)),
+        rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.72);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+
+    .meal-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .meal-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+    }
+
+    .meal-tag {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(250,204,21,0.18);
+      color: #fff5bf;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .meal-title {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .nutrient-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .nutrient-pill {
+      background: rgba(0,0,0,0.18);
+      border-radius: 16px;
+      padding: 10px 12px;
+      font-size: 0.92rem;
+    }
+
+    .section-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.74);
+      margin-bottom: 8px;
+    }
+
+    .ingredients-list,
+    .instructions-list {
+      margin: 0;
+      padding-left: 18px;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .ingredients-list li,
+    .instructions-list li {
+      margin-bottom: 8px;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 980px) {
+      .page-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-panel {
+        position: static;
+      }
+    }
+  </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg shadow-sm sticky-top"
-     style="background: linear-gradient(90deg, #00b09b, #96c93d);">
+  <nav class="navbar navbar-expand-lg shadow-sm sticky-top">
+    <div class="container py-2 d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center">
+        <button id="menuBtn" class="navbar-toggler border-0 text-white me-2" type="button">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-  <div class="container py-2 d-flex align-items-center justify-content-between">
+        <a class="navbar-brand d-flex align-items-center text-white fw-bold m-0" href="/home">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="FitMeal logo">
+        </a>
+        <span id="Brandname">FitMeal</span>
+      </div>
 
-    <!-- LEFT SIDE -->
-    <div class="d-flex align-items-center">
-
-      <!-- ✅ MENU BUTTON LEFT -->
-      <button id="menuBtn" class="navbar-toggler border-0 text-white me-2" type="button">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- LOGO -->
-      <a class="navbar-brand d-flex align-items-center text-white fw-bold m-0"
-         href="/home">
-        <img src="{{ url_for('static', filename='images/logo.png') }}">
-      </a>
-
-      <!-- BRAND -->
-      <span id="Brandname">FitMeal</span>
-
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/home">Home</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/preferences">Preferences</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/recipes">Recipes</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/mealplan">Meal Plan</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold active" href="/chat">Chatbot</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/report">Report</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/about">About</a></li>
+          <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/contact">Contact</a></li>
+          <li class="nav-item ms-3">
+            <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a>
+          </li>
+        </ul>
+      </div>
     </div>
+  </nav>
 
-    <!-- RIGHT SIDE NAV -->
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav align-items-center">
-        <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/home">Home</a></li>
-        <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/preferences">Preferences</a></li>
-        <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/recipes">Recipes</a></li>
-        <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold active" href="/mealplan">Meal Plan</a></li>
-        <li class="nav-item mx-2">
-          <a class="nav-link text-white fw-semibold" href="/chat">Chatbot</a>
-        </li>
-       
-        <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/report">Report</a></li>
-        <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/about">About</a></li>
-        <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/contact">Contact</a></li>
-        <li class="nav-item ms-3">
-          <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a>
-        </li>
-      </ul>
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-content">
+      <h5 class="mb-4 fw-bold">Menu</h5>
+      <a href="/home">Home</a>
+      <a href="/preferences">Preferences</a>
+      <a href="/recipes">Recipes</a>
+      <a href="/mealplan">Meal Plan</a>
+      <a href="/chat">Chatbot</a>
+      <a href="/report">Report</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+      <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm mt-3">Sign Up</a>
     </div>
-
   </div>
-</nav>
+  <div id="overlay"></div>
 
-  <!-- 🔥 SIDEBAR -->
-<div id="sidebar" class="sidebar">
-  <div class="sidebar-content">
+  <main class="page-shell">
+    <section class="glass-panel chat-panel">
+      <div class="eyebrow"><i class="bi bi-stars"></i> Smart Meal Assistant</div>
+      <h1 class="chat-title">Chat naturally. Download plans only when you need them.</h1>
+      <p class="chat-subtitle">Say hello, ask for help, or request a full diet plan in English or Hinglish. Meal plans will appear in the planner area instead of cluttering the chat.</p>
 
-    <h5 class="mb-4 fw-bold">Menu</h5>
-    <a href="/home">Home</a>
-    <a href="/preferences">Preferences</a>
-    <a href="/recipes">Recipes</a>
-    <a href="/mealplan">Meal Plan</a>
-    <a href="/chat">Chatbot</a>
+      <div id="chatOutput">
+        <div class="message bot">Hi! I can chat normally or build a diet plan for you. Try: "make a 3 meal vegetarian plan for weight loss" or just say "hi".</div>
+      </div>
 
-    <a href="/report">Report</a>
-    <a href="/about">About</a>
-    <a href="/contact">Contact</a>
-     <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a>
+      <div id="chatInputContainer">
+        <input id="chatInput" type="text" placeholder="Type a message or ask for a meal plan..." onkeydown="handleInputKey(event)">
+        <button class="send-btn" onclick="askBot()">Send</button>
+      </div>
+      <div class="status-chip" id="statusChip"><i class="bi bi-lightning-charge-fill"></i> Ready</div>
+    </section>
 
+    <section class="glass-panel results-panel">
+      <div class="results-head">
+        <div>
+          <h2>Meal Plan Preview</h2>
+          <p id="plannerCaption">Your meal plan will appear here when you request one.</p>
+        </div>
+        <div class="download-actions">
+          <button class="action-btn primary" id="downloadJsonBtn" onclick="downloadMealPlan('json')" disabled>Download JSON</button>
+          <button class="action-btn" id="downloadTxtBtn" onclick="downloadMealPlan('txt')" disabled>Download TXT</button>
+        </div>
+      </div>
 
-  </div>
-</div>  
-<div id="overlay"></div>
- <div id="chatContainer">
-  <h3 class="mb-3">Ask me anything about your diet! 🍽️</h3>
-  
-  <div id="chatOutput"></div>
-  
-  <div id="chatInputContainer">
-    <input id="chatInput" type="text" placeholder="Type here...">
-    <button class="btn btn-success rounded-pill px-4" onclick="askBot()">Ask</button>
-  </div>
-</div>
+      <div id="mealPlanMeta" class="plan-meta" style="display:none;"></div>
+      <div id="mealPlanContainer" class="empty-state">
+        Ask for a plan like "vegetarian 1800 calorie meal plan with 4 meals" and I will build it here.
+      </div>
+    </section>
+  </main>
 
-<script>
-function askBot() {
-    let query = document.getElementById("chatInput").value;
-    if(!query) return;
+  <script>
+    let currentMealPlan = [];
+    let lastQuery = "";
 
-    let output = document.getElementById("chatOutput");
-    output.innerHTML += `You: ${query}\n`;
+    function handleInputKey(event) {
+      if (event.key === "Enter") {
+        askBot();
+      }
+    }
 
-    fetch("/chatbot", {
+    function askBot() {
+      const input = document.getElementById("chatInput");
+      const query = input.value.trim();
+      if (!query) return;
+
+      lastQuery = query;
+      appendMessage("user", query);
+      setStatus("Thinking...");
+      input.value = "";
+
+      fetch("/chatbot", {
         method: "POST",
         headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({query: query})
-    })
-    .then(res=>res.json())
-    .then(data=>{
-        output.innerHTML += `Bot: ${data.response}\n\n`;
-        document.getElementById("chatInput").value = "";
-        output.scrollTop = output.scrollHeight;
-    })
-    .catch(err=>{
-        output.innerHTML += "Bot: Oops! Error occurred.\n\n";
-        console.error(err);
-    });
-}
+        body: JSON.stringify({query})
+      })
+      .then(async res => {
+        let data = {};
+        try {
+          data = await res.json();
+        } catch (error) {
+          data = {};
+        }
 
- // Navbar auto close on click
-const navLinks = document.querySelectorAll('.nav-link');
-const navbarCollapse = document.querySelector('.navbar-collapse');
+        if (!res.ok) {
+          throw new Error(data.error || "Unable to process this request.");
+        }
 
-navLinks.forEach(link => {
-  link.addEventListener('click', () => {
-    if (navbarCollapse.classList.contains('show')) {
-      new bootstrap.Collapse(navbarCollapse).hide();
+        const message = data.message || "Done.";
+        appendMessage("bot", message);
+
+        if (data.type === "meal_plan") {
+          renderMealPlan(data.meal_plan || []);
+          setStatus("Meal plan ready");
+        } else {
+          clearMealPlanPreview();
+          setStatus("Chat reply ready");
+        }
+      })
+      .catch(error => {
+        appendMessage("bot", error.message || "Something went wrong.");
+        setStatus("Error");
+      });
     }
-  });
-});
 
-// sidebar open-close fix
-const menuBtn = document.getElementById("menuBtn");
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
+    function appendMessage(type, text) {
+      const output = document.getElementById("chatOutput");
+      const div = document.createElement("div");
+      div.className = `message ${type}`;
+      div.textContent = text;
+      output.appendChild(div);
+      output.scrollTop = output.scrollHeight;
+    }
 
-menuBtn.addEventListener("click", () => {
-  sidebar.classList.add("active");
-  overlay.classList.add("active");
-  document.body.style.overflow = "hidden"; // 🔥 scroll lock
-});
+    function renderMealPlan(mealPlan) {
+      currentMealPlan = Array.isArray(mealPlan) ? mealPlan : [];
 
-overlay.addEventListener("click", () => {
-  sidebar.classList.remove("active");
-  overlay.classList.remove("active");
-  document.body.style.overflow = "auto"; // 🔥 unlock
-});
+      const meta = document.getElementById("mealPlanMeta");
+      const container = document.getElementById("mealPlanContainer");
+      const caption = document.getElementById("plannerCaption");
+      const totalCalories = currentMealPlan.reduce((sum, item) => sum + readNumber(item.calories), 0);
 
-</script>
+      document.getElementById("downloadJsonBtn").disabled = !currentMealPlan.length;
+      document.getElementById("downloadTxtBtn").disabled = !currentMealPlan.length;
 
+      if (!currentMealPlan.length) {
+        clearMealPlanPreview();
+        return;
+      }
 
+      caption.textContent = "Review the plan below, then download it in the format you prefer.";
+      meta.style.display = "grid";
+      meta.innerHTML = `
+        <div class="meta-tile"><small>Meals</small><strong>${currentMealPlan.length}</strong></div>
+        <div class="meta-tile"><small>Approx Total Calories</small><strong>${totalCalories || "N/A"}</strong></div>
+        <div class="meta-tile"><small>Last Request</small><strong>${escapeHtml(lastQuery)}</strong></div>
+      `;
 
+      container.className = "plan-grid";
+      container.innerHTML = currentMealPlan.map(item => {
+        const ingredients = normalizeIngredients(item.ingredients);
+        const instructions = normalizeInstructions(item.instructions);
+        return `
+          <article class="meal-card">
+            <div class="meal-image-wrap">
+              ${item.image ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title || item.meal || "Meal")}">` : `<span>No image</span>`}
+            </div>
+            <div class="meal-body">
+              <span class="meal-tag">${escapeHtml(item.meal || "Meal")}</span>
+              <h3 class="meal-title">${escapeHtml(item.title || "Suggested meal")}</h3>
+              <div class="nutrient-grid">
+                <div class="nutrient-pill"><strong>Calories</strong><br>${escapeHtml(item.calories || "N/A")}</div>
+                <div class="nutrient-pill"><strong>Protein</strong><br>${escapeHtml(item.protein || "N/A")}</div>
+                <div class="nutrient-pill"><strong>Carbs</strong><br>${escapeHtml(item.carbs || "N/A")}</div>
+                <div class="nutrient-pill"><strong>Fat</strong><br>${escapeHtml(item.fat || "N/A")}</div>
+              </div>
+              <div>
+                <div class="section-title">Ingredients</div>
+                <ul class="ingredients-list">
+                  ${ingredients.map(ingredient => `<li>${escapeHtml(ingredient)}</li>`).join("")}
+                </ul>
+              </div>
+              <div>
+                <div class="section-title">Instructions</div>
+                <ol class="instructions-list">
+                  ${instructions.map(step => `<li>${escapeHtml(step)}</li>`).join("")}
+                </ol>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function clearMealPlanPreview() {
+      currentMealPlan = [];
+      document.getElementById("downloadJsonBtn").disabled = true;
+      document.getElementById("downloadTxtBtn").disabled = true;
+      document.getElementById("plannerCaption").textContent = "Your meal plan will appear here when you request one.";
+      document.getElementById("mealPlanMeta").style.display = "none";
+      document.getElementById("mealPlanMeta").innerHTML = "";
+      const container = document.getElementById("mealPlanContainer");
+      container.className = "empty-state";
+      container.textContent = "This message was regular chat, so no meal plan was generated.";
+    }
+
+    function normalizeIngredients(value) {
+      if (Array.isArray(value) && value.length) {
+        return value.filter(Boolean);
+      }
+      if (typeof value === "string" && value.trim()) {
+        return value.split(/[\n,|]/).map(item => item.trim()).filter(Boolean);
+      }
+      return ["Ingredients not available"];
+    }
+
+    function normalizeInstructions(value) {
+      if (Array.isArray(value) && value.length) {
+        return value.filter(Boolean);
+      }
+      if (typeof value === "string" && value.trim()) {
+        return value
+          .split(/(?:\.\s+|\n+)/)
+          .map(step => step.trim())
+          .filter(Boolean);
+      }
+      return ["Instructions not available"];
+    }
+
+    function readNumber(value) {
+      const match = String(value || "").match(/[\d.]+/);
+      return match ? Number(match[0]) : 0;
+    }
+
+    function downloadMealPlan(format) {
+      if (!currentMealPlan.length) return;
+
+      let content = "";
+      let mimeType = "application/json";
+      let extension = "json";
+
+      if (format === "txt") {
+        mimeType = "text/plain";
+        extension = "txt";
+        content = buildTextMealPlan();
+      } else {
+        content = JSON.stringify({meal_plan: currentMealPlan}, null, 2);
+      }
+
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `fitmeal-plan.${extension}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function buildTextMealPlan() {
+      return currentMealPlan.map(item => {
+        const ingredients = normalizeIngredients(item.ingredients).join(", ");
+        const instructions = normalizeInstructions(item.instructions).join(" ");
+        return [
+          `${item.meal || "Meal"}: ${item.title || ""}`,
+          `Calories: ${item.calories || "N/A"}`,
+          `Protein: ${item.protein || "N/A"}`,
+          `Carbs: ${item.carbs || "N/A"}`,
+          `Fat: ${item.fat || "N/A"}`,
+          `Ingredients: ${ingredients}`,
+          `Instructions: ${instructions}`
+        ].join("\n");
+      }).join("\n\n--------------------\n\n");
+    }
+
+    function setStatus(text) {
+      document.getElementById("statusChip").innerHTML = `<i class="bi bi-lightning-charge-fill"></i> ${escapeHtml(text)}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    const navLinks = document.querySelectorAll('.nav-link');
+    const navbarCollapse = document.querySelector('.navbar-collapse');
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+          new bootstrap.Collapse(navbarCollapse).hide();
+        }
+      });
+    });
+
+    const menuBtn = document.getElementById("menuBtn");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    menuBtn.addEventListener("click", () => {
+      sidebar.classList.add("active");
+      overlay.classList.add("active");
+      document.body.style.overflow = "hidden";
+    });
+
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("active");
+      overlay.classList.remove("active");
+      document.body.style.overflow = "auto";
+    });
+  </script>
 </body>
 </html>
