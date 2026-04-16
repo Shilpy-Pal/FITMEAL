@@ -396,9 +396,9 @@
     // Main: Generate meal plan
     function generateMealPlan() {
       planData = {};
-      let slots = ['Breakfast','Morning Snack','Lunch','Evening Snack','Dinner'];
+      let slots = ['Breakfast','Morning Snack','Lunch','Evening Snack','Dinner', 'Side'];
       slots.forEach(slot => {
-        let typeKey = slot.toLowerCase().includes('snack') ? 'snacks' : slot.toLowerCase();
+        let typeKey = slot === 'Side' ? 'side' : (slot.toLowerCase().includes('snack') ? 'snacks' : slot.toLowerCase());
         let recipes = allRecipes.filter(r =>
           (r.type && r.type.toLowerCase() === typeKey) &&
           (dietFilter==='All' || (r.dietary && r.dietary.toLowerCase() === dietFilter.toLowerCase()))
@@ -419,7 +419,7 @@
 
     function showMealPlan() {
       let html = '';
-      ['Breakfast','Morning Snack','Lunch','Evening Snack','Dinner'].forEach(slot=>{
+      ['Breakfast','Morning Snack','Lunch','Evening Snack','Dinner', 'Side'].forEach(slot=>{
         let meal = planData[slot];
         html += `<div class="col-md-6 col-lg-3 mb-3">
           <div class="meal-card">
@@ -429,7 +429,14 @@
             <div class="p-3">
               <div class="meal-title mb-1">${meal.name}</div>
               <span class="badge badge-primary mb-1">${meal.dietary || meal.type || "-"}</span>
-              <div><strong>Calories:</strong> ${meal.calories || '-'} kcal</div>
+              ${meal.type === 'side' ? `
+              <div class="d-flex align-items-center my-2">
+                 <button class="btn btn-sm btn-outline-secondary py-0" onclick="updateSideQuantity('${slot}', -1)">-</button>
+                 <span id="qty-${slot.replace(/\s+/g, '')}" class="mx-2 fw-bold" data-base-cal="${meal.calories}" data-quantity="1">1</span>
+                 <button class="btn btn-sm btn-outline-secondary py-0" onclick="updateSideQuantity('${slot}', 1)">+</button>
+              </div>
+              ` : ''}
+              <div id="cal-display-${slot.replace(/\s+/g, '')}"><strong>Calories:</strong> ${meal.calories || '-'} kcal</div>
               <div><strong>Protein:</strong> ${meal.protein || '-'} g</div>
               <div><strong>Carbs:</strong> ${meal.carbs || '-'} g</div>
               <div><strong>Fat:</strong> ${meal.fat || '-'} g</div>
@@ -504,6 +511,23 @@ overlay.addEventListener("click", () => {
   document.body.style.overflow = "auto"; // 🔥 unlock
 });
 
+// Recalculates dynamically for recipes.html preview cards
+function updateSideQuantity(slot, change) {
+    const slotId = slot.replace(/\s+/g, '');
+    const qtySpan = document.getElementById(`qty-${slotId}`);
+    const calDiv = document.getElementById(`cal-display-${slotId}`);
+    
+    if(!qtySpan || !calDiv) return;
+    
+    let newQty = parseInt(qtySpan.getAttribute('data-quantity')) + change;
+    if(newQty < 1) newQty = 1;
+    
+    qtySpan.setAttribute('data-quantity', newQty);
+    qtySpan.innerText = newQty;
+    
+    let baseCal = parseFloat(qtySpan.getAttribute('data-base-cal'));
+    calDiv.innerHTML = `<strong>Calories:</strong> ${Math.round(baseCal * newQty)} kcal`;
+}
   </script>
 </body>
 </html>

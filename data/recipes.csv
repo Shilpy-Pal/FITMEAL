@@ -3575,3 +3575,6 @@ Turmeric Milk (Haldi Doodh),120,Vegetarian,Snacks,1 glass,/static/images/Turmeri
 Sweet Lassi,150,Vegetarian,Snacks,1 glass,/static/images/Sweet Lassi.jpg,5 min,"Curd (150ml), Sugar, Cardamom, Water, Ice","1. Blend curd, sugar, cardamom, water, ice. 2. Serve chilled.",5,24,3
 Mango Lassi,180,Vegetarian,Snacks,1 glass,/static/images/Mango Lassi.jpg,5 min,"Curd (150ml), Mango pulp (100g), Sugar, Cardamom, Ice","1. Blend curd, mango pulp, sugar, cardamom, ice. 2. Serve chilled.",5,32,3
 Badam Milk,180,Vegetarian,Snacks,1 glass,/static/images/badammilk.jpg,15 min,"Milk (200ml), Almonds (10), Sugar, Cardamom, Saffron","1. Soak almonds, peel, grind to paste. 2. Heat milk with almond paste, sugar, cardamom, saffron. 3. Serve hot or cold.",8,20,7
+Roti,100,Vegetarian,side,1 portion,,10 min,,,3,15,1
+Paratha,180,Vegetarian,side,1 portion,,15 min,,,4,20,5
+Rice (100g),130,Vegetarian,side,100g,,20 min,,,2,28,0

@@ -307,14 +307,26 @@ async function loadMealPlan() {
         <div class="recipe-card">
           <img src="${recipe.image || '/static/images/default.jpg'}" class="recipe-img" alt="${recipe.name}">
           <div class="rc-body">
-            <div class="meal-slot mb-1">${slot}</div>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <div class="meal-slot m-0">${slot}</div>
+                <button class="btn btn-sm btn-outline-danger shadow-sm" onclick="toggleFavorite('${slot}', '${recipe.name}')">❤️ Favorite</button>
+            </div>
             <div class="rc-title mb-1">${recipe.name}</div>
+            ${recipe.type === 'side' ? `
+            <div class="d-flex align-items-center my-2">
+               <span class="me-2 fw-bold" style="font-size: 0.95rem;">Quantity:</span>
+               <button class="btn btn-sm btn-outline-secondary py-0" onclick="handleQuantityChange('${slot}', '${recipe.name}', -1)">-</button>
+               <span id="mp-qty-${slot.replace(/\s+/g, '')}" class="mx-3 fw-bold" data-quantity="1">1</span>
+               <button class="btn btn-sm btn-outline-secondary py-0" onclick="handleQuantityChange('${slot}', '${recipe.name}', 1)">+</button>
+            </div>
+            ` : ''}
             <div class="rc-meta">
-              <span class="badge-value">Cal: ${recipe.calories||'-'}</span>
+              <span class="badge-value" id="mp-cal-${slot.replace(/\s+/g, '')}" data-base-cal="${recipe.calories}">Cal: ${recipe.calories||'-'}</span>
               <span class="badge-value">Prot: ${recipe.protein||'-'}g</span>
               <span class="badge-value">Carb: ${recipe.carbs||'-'}g</span>
               <span class="badge-value">Fat: ${recipe.fat||'-'}g</span>
             </div>
+            <div id="mp-compare-${slot.replace(/\s+/g, '')}" class="mb-2 mt-1"></div>
             <div class="rc-meta mb-1">
               <span><strong>Portion:</strong> ${recipe.portion || '-'}</span>
               <span class="ms-2"><strong>Prep Time:</strong> ${recipe.prep_time || '-'}</span>
@@ -333,6 +345,15 @@ async function loadMealPlan() {
     }
   });
   document.getElementById('recipe-section').innerHTML = html;
+  
+  // Initialize comparison message for each meal
+  Object.keys(plan).forEach(slot => {
+    let name = plan[slot].name || plan[slot];
+    let recipe = allRecipes.find(r => r.name === name);
+    if (recipe && recipe.calories) {
+      calculateMealComparison(slot, recipe.calories);
+    }
+  });
 }
 window.onload = loadMealPlan;
 
@@ -364,6 +385,84 @@ overlay.addEventListener("click", () => {
   overlay.classList.remove("active");
   document.body.style.overflow = "auto"; // 🔥 unlock
 });
+
+// 1. Percentage Distribution & Total Calories Fetch
+const MEAL_DISTRIBUTION = {
+  "Breakfast": 0.25,
+  "Morning Snack": 0.10,
+  "Lunch": 0.30,
+  "Evening Snack": 0.10,
+  "Dinner": 0.25
+};
+
+const getTotalCalories = () => parseFloat(localStorage.getItem('calorieGoal')) || 2000;
+
+// 2. Handle side item + / - updates
+function handleQuantityChange(slot, recipeName, change) {
+  const slotId = slot.replace(/\s+/g, '');
+  const qtyElement = document.getElementById(`mp-qty-${slotId}`);
+  const calBadge = document.getElementById(`mp-cal-${slotId}`);
+  
+  if (!qtyElement || !calBadge) return;
+
+  let newQty = parseInt(qtyElement.getAttribute('data-quantity')) + change;
+  if (newQty < 1) newQty = 1;
+  
+  qtyElement.setAttribute('data-quantity', newQty);
+  qtyElement.innerText = newQty;
+
+  const baseCal = parseFloat(calBadge.getAttribute('data-base-cal'));
+  updateCalories(slot, baseCal, newQty);
+}
+
+// 3. Real-time calorie calculator wrapper
+function updateCalories(slot, baseCal, quantity) {
+  const slotId = slot.replace(/\s+/g, '');
+  const actualCalories = Math.round(baseCal * quantity);
+  
+  document.getElementById(`mp-cal-${slotId}`).innerText = `Cal: ${actualCalories}`;
+  calculateMealComparison(slot, actualCalories);
+}
+
+// 4. Dynamic Calorie Comparison Message (Calculated via BMR expectations)
+function calculateMealComparison(slot, actualCalories) {
+  const slotId = slot.replace(/\s+/g, '');
+  const container = document.getElementById(`mp-compare-${slotId}`);
+  if (!container) return;
+
+  const expectedCalories = getTotalCalories() * (MEAL_DISTRIBUTION[slot] || 0);
+  const diff = actualCalories - expectedCalories;
+  
+  let message, colorClass;
+
+  if (Math.abs(diff) <= 20) {
+    message = "Perfect intake";
+    colorClass = "text-success";
+  } else if (diff > 0) {
+    message = `${Math.round(diff)} calories more than recommended`;
+    colorClass = "text-danger";
+  } else {
+    message = `${Math.round(Math.abs(diff))} calories less than recommended`;
+    colorClass = "text-primary";
+  }
+
+  container.innerHTML = `<span class="fw-bold ${colorClass}" style="font-size: 0.9rem;">${message}</span>`;
+}
+
+// 5. Favorite Button Toggle Logic
+function toggleFavorite(slot, recipeName) {
+  let favoriteMeals = JSON.parse(localStorage.getItem('favoriteMeals') || '{}');
+  
+  if (favoriteMeals[slot] === recipeName) {
+    delete favoriteMeals[slot];
+    alert(`Removed ${recipeName} from ${slot} favorites.`);
+  } else {
+    favoriteMeals[slot] = recipeName;
+    alert(`❤️ Saved ${recipeName} as favorite for ${slot}!`);
+  }
+  
+  localStorage.setItem('favoriteMeals', JSON.stringify(favoriteMeals));
+}
 </script>
 </body>
 </html>
