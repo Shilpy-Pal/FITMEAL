@@ -269,6 +269,9 @@
     <div class="mealplan-title mt-4 mb-4">Your Meal Plan Recipes</div>
     <div>
       <div id="recipe-section" class="row justify-content-center"></div>
+      
+      <div class="mealplan-title mt-5 mb-4" id="sidePlanTitle" style="display:none; color:#228045;">Side Dish</div>
+      <div id="side-recipe-section" class="row justify-content-center"></div>
     </div>
   </div>
   <!--newline-->
@@ -296,13 +299,14 @@ async function loadMealPlan() {
   }
   let res = await fetch('/api/recipes');
   let allRecipes = await res.json();
-  let html = "";
+  let mainHtml = "";
+  let sideHtml = "";
   // For each slot in plan, find full recipe and show card/list.
   Object.keys(plan).forEach(slot => {
     let name = plan[slot].name || plan[slot];
     let recipe = allRecipes.find(r => r.name === name);
     if (recipe) {
-      html += `
+      let card = `
       <div class="col-md-10 col-lg-7 my-2">
         <div class="recipe-card">
           <img src="${recipe.image || '/static/images/default.jpg'}" class="recipe-img" alt="${recipe.name}">
@@ -335,16 +339,26 @@ async function loadMealPlan() {
             <ul>
               ${(recipe.ingredients || []).map(i=>`<li>${i}</li>`).join('')}
             </ul>
+            ${recipe.type !== 'side' ? `
             <div class="rc-section-title">Banane ka Tarika</div>
             <ol>
               ${(recipe.instructions || []).map(step=>`<li>${step}</li>`).join('')}
             </ol>
+            ` : ''}
           </div>
         </div>
       </div>`;
+      if (slot === 'Side') {
+          sideHtml += card;
+      } else {
+          mainHtml += card;
+      }
     }
   });
-  document.getElementById('recipe-section').innerHTML = html;
+
+  document.getElementById('recipe-section').innerHTML = mainHtml;
+  document.getElementById('side-recipe-section').innerHTML = sideHtml;
+  document.getElementById('sidePlanTitle').style.display = sideHtml ? 'block' : 'none';
   
   // Initialize comparison message for each meal
   Object.keys(plan).forEach(slot => {

@@ -351,6 +351,8 @@
   <div class="container">
     <h5 class="text-center mb-3 fw-bold" id="planTitle"></h5>
     <div id="meal-plan-section" class="row g-4 justify-content-center"></div>
+    <h5 class="text-center mt-5 mb-3 fw-bold" id="sideTitle" style="display:none; color: #228045;">Side Dish</h5>
+    <div id="side-dish-section" class="row g-4 justify-content-center"></div>
   </div>
 
   <!-- SEE RECIPES BUTTON -->
@@ -418,10 +420,11 @@
     }
 
     function showMealPlan() {
-      let html = '';
+      let mainHtml = '';
+      let sideHtml = '';
       ['Breakfast','Morning Snack','Lunch','Evening Snack','Dinner', 'Side'].forEach(slot=>{
         let meal = planData[slot];
-        html += `<div class="col-md-6 col-lg-3 mb-3">
+        let card = `<div class="col-md-6 col-lg-3 mb-3">
           <div class="meal-card">
             <h6 class="text-center pt-3 pb-1 mb-0" style="font-weight:700;">${slot}</h6>
             ${meal ? `
@@ -446,8 +449,17 @@
             ` : `<p class="text-center text-muted py-4">🍽️ No ${slot} suggestion available.</p>`}
           </div>
         </div>`;
+        if (slot === 'Side') {
+            sideHtml += card;
+        } else {
+            mainHtml += card;
+        }
       });
-      document.getElementById('meal-plan-section').innerHTML = html;
+      document.getElementById('meal-plan-section').innerHTML = mainHtml;
+      let sdSec = document.getElementById('side-dish-section');
+      if (sdSec) sdSec.innerHTML = sideHtml;
+      let sdTitle = document.getElementById('sideTitle');
+      if (sdTitle) sdTitle.style.display = sideHtml ? 'block' : 'none';
     }
 
     // Slot changing for alternatives
