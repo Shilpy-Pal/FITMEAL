@@ -17,12 +17,16 @@
     }
 
     body {
-      background: #f8fafc;
-      
-    
+      background: linear-gradient(-45deg, #f8fafc, #e2f5d6, #d4fc79, #f8fafc);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
       font-family: 'Poppins', sans-serif;
       scroll-behavior: smooth;
-      
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
     .navbar {
       backdrop-filter: blur(12px);
@@ -234,12 +238,25 @@
 }
 
     .meal-card {
-      overflow: hidden; border-radius: 16px;
-      box-shadow: 0 6px 22px rgba(76,81,109,0.14);
-      background: white; margin-bottom: 28px;
-      max-width: 465px; min-height: 425px;
+      overflow: hidden; 
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+      margin-bottom: 28px;
+      max-width: 465px; 
+      min-height: 425px;
       margin-left: auto; margin-right: auto;
       animation: cardFadeIn 0.7s cubic-bezier(.22,.75,.40,1.13) forwards;
+    }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.55) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.6) !important;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1) !important;
     }
     @keyframes cardFadeIn { to { opacity: 1; transform: translateY(0) scale(1);} }
     .meal-image { width: 100%; height: 185px; object-fit: cover; border-radius: 8px 8px 0 0; }
@@ -344,6 +361,7 @@
       <button class="btn-filter" data-filter="Non-Vegetarian" onclick="setDiet('Non-Vegetarian')">NON-VEG</button>
       <button class="btn-filter" data-filter="Vegan" onclick="setDiet('Vegan')">VEGAN</button>
       <button class="btn-filter" data-filter="Keto" onclick="setDiet('Keto')">KETO</button>
+      <button class="btn btn-lg shadow-sm rounded-pill fw-bold" style="background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); color:#fff; border:none;" data-bs-toggle="modal" data-bs-target="#favoritesModal" onclick="renderFavorites()">⭐ My Favorites</button>
     </div>
 
     <!-- 🔥 MEAL SLOT BUTTONS 🔥 -->
@@ -369,7 +387,7 @@
 
   <!-- TOTAL CALORIES WIDGET -->
   <div class="container text-center my-4" id="totalCalorieContainer" style="display:none;">
-      <h4 class="fw-bold p-3 border border-2 border-success rounded d-inline-block bg-white shadow-sm">
+      <h4 class="fw-bold p-3 border border-2 border-success rounded d-inline-block glass-panel shadow-sm text-dark">
           Total Meal Plan Calories: <span id="current-cals" class="text-success">0</span> / {{ cal_goal }} kcal
       </h4>
   </div>
@@ -407,6 +425,24 @@
       &copy; 2025 FitMeal. All Rights Reserved.
     </div>
   </footer>
+
+  <!-- FAVORITES MODAL -->
+  <div class="modal fade" id="favoritesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content glass-panel" style="border-radius: 20px;">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold text-dark">⭐ My Favorite Meals</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="favoritesModalBody">
+           <!-- Dynamic Favorite Content -->
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
   <script>
@@ -501,7 +537,7 @@
               <div id="fat-display-${slot.replace(/\s+/g, '')}"><strong>Fat:</strong> ${Math.round((meal.fat || 0) * (mealQuantities[slot] || 1)) || '-'} g</div>
               <div id="portion-display-${slot.replace(/\s+/g, '')}"><strong>Portion:</strong> <span class="text-danger fw-bold">${mealQuantities[slot] || 1}x</span> (${meal.portion || '-'})</div>
               <button class="btn btn-outline-success btn-sm mt-2" onclick="changeMealSlot('${slot}')">Change</button>
-              <button class="btn btn-outline-danger btn-sm mt-2 ms-1" onclick="toggleFavoriteRecipes('${slot}', '${meal.name.replace(/'/g, "\\'")}')">❤️ Favorite</button>
+              <button class="btn btn-outline-danger btn-sm mt-2 ms-1" onclick="toggleFavoriteRecipes(this)" data-name="${encodeURIComponent(meal.name)}">❤️ Favorite</button>
               ${(slot === 'Morning Snack' || slot === 'Evening Snack') ? `<button class="btn btn-outline-warning btn-sm mt-2 ms-1 text-dark fw-bold" onclick="removeMealSlot('${slot}')">Remove</button>` : ''}
             </div>
             ` : `
@@ -691,19 +727,79 @@ function calculateTotalPlanCalories() {
   if (container) container.style.display = 'block';
 }
 
-function toggleFavoriteRecipes(slot, recipeName) {
-    let favorites = JSON.parse(localStorage.getItem('favoriteMeals') || '[]');
+function toggleFavoriteRecipes(btn) {
+    let recipeName = decodeURIComponent(btn.getAttribute('data-name'));
+    let favorites = [];
+    try {
+        favorites = JSON.parse(localStorage.getItem('favoriteMeals') || '[]');
+    } catch(e) {
+        favorites = [];
+    }
+    
     let exists = favorites.find(f => f.name === recipeName);
     if (!exists) {
         let recipe = allRecipes.find(r => r.name === recipeName);
         if (recipe) {
             favorites.push(recipe);
             localStorage.setItem('favoriteMeals', JSON.stringify(favorites));
-            alert(recipeName + ' saved to Favorites!');
+            
+            btn.innerText = '✅ Saved!';
+            btn.classList.remove('btn-outline-danger');
+            btn.classList.add('btn-success', 'text-white');
+            
+            if(document.getElementById('favoritesModal').classList.contains('show')) {
+                renderFavorites();
+            }
         }
     } else {
         alert(recipeName + ' is already in Favorites!');
     }
+}
+
+function renderFavorites() {
+    let favorites = [];
+    try {
+        favorites = JSON.parse(localStorage.getItem('favoriteMeals') || '[]');
+    } catch(e) {
+        favorites = [];
+    }
+    
+    let modalBody = document.getElementById('favoritesModalBody');
+    if (favorites.length === 0) {
+        modalBody.innerHTML = '<p class="text-center text-muted my-4 fw-bold">No favorite meals added yet! Go save some! 🍽️</p>';
+        return;
+    }
+    let html = '<div class="row g-3">';
+    favorites.forEach((fav, index) => {
+        html += `<div class="col-12 col-md-6">
+            <div class="card glass-panel p-2 shadow-sm rounded">
+                <div class="d-flex align-items-center">
+                    <img src="${fav.image}" class="rounded" style="width: 80px; height: 80px; object-fit: cover; margin-right: 15px;">
+                    <div class="w-100">
+                        <h6 class="mb-1 fw-bold text-dark">${fav.name}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge" style="background:#00b09b;">${fav.calories || 0} kcal</span>
+                            <button class="btn btn-sm btn-outline-danger px-2 py-0 fw-bold" onclick="removeFavorite(${index})">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    });
+    html += '</div>';
+    modalBody.innerHTML = html;
+}
+
+function removeFavorite(index) {
+    let favorites = [];
+    try {
+        favorites = JSON.parse(localStorage.getItem('favoriteMeals') || '[]');
+    } catch(e) {
+        favorites = [];
+    }
+    favorites.splice(index, 1);
+    localStorage.setItem('favoriteMeals', JSON.stringify(favorites));
+    renderFavorites(); 
 }
   </script>
 </body>
