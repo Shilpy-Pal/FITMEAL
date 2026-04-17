@@ -492,14 +492,14 @@
               <span class="badge badge-primary mb-1">${meal.dietary || meal.type || "-"}</span>
               <div class="d-flex align-items-center my-2">
                  <button class="btn btn-sm btn-outline-secondary py-0" onclick="updateQuantity('${slot}', -0.5)">-</button>
-                 <span id="qty-${slot.replace(/\s+/g, '')}" class="mx-2 fw-bold" data-base-cal="${meal.calories}" data-base-pro="${meal.protein}" data-base-carb="${meal.carbs}" data-base-fat="${meal.fat}" data-quantity="${mealQuantities[slot] || 1}">${mealQuantities[slot] || 1}</span>
+                 <span id="qty-${slot.replace(/\s+/g, '')}" class="mx-2 fw-bold" data-base-cal="${meal.calories}" data-base-pro="${meal.protein}" data-base-carb="${meal.carbs}" data-base-fat="${meal.fat}" data-base-portion="${meal.portion || '-'}" data-quantity="${mealQuantities[slot] || 1}">${mealQuantities[slot] || 1}</span>
                  <button class="btn btn-sm btn-outline-secondary py-0" onclick="updateQuantity('${slot}', 0.5)">+</button>
               </div>
               <div id="cal-display-${slot.replace(/\s+/g, '')}"><strong>Calories:</strong> ${Math.round((meal.calories || 0) * (mealQuantities[slot] || 1)) || '-'} kcal</div>
               <div id="pro-display-${slot.replace(/\s+/g, '')}"><strong>Protein:</strong> ${Math.round((meal.protein || 0) * (mealQuantities[slot] || 1)) || '-'} g</div>
               <div id="carb-display-${slot.replace(/\s+/g, '')}"><strong>Carbs:</strong> ${Math.round((meal.carbs || 0) * (mealQuantities[slot] || 1)) || '-'} g</div>
               <div id="fat-display-${slot.replace(/\s+/g, '')}"><strong>Fat:</strong> ${Math.round((meal.fat || 0) * (mealQuantities[slot] || 1)) || '-'} g</div>
-              <div><strong>Base Portion:</strong> ${meal.portion || '-'}</div>
+              <div id="portion-display-${slot.replace(/\s+/g, '')}"><strong>Portion:</strong> <span class="text-danger fw-bold">${mealQuantities[slot] || 1}x</span> (${meal.portion || '-'})</div>
               <button class="btn btn-outline-success btn-sm mt-2" onclick="changeMealSlot('${slot}')">Change</button>
               <button class="btn btn-outline-danger btn-sm mt-2 ms-1" onclick="toggleFavoriteRecipes('${slot}', '${meal.name.replace(/'/g, "\\'")}')">❤️ Favorite</button>
               ${(slot === 'Morning Snack' || slot === 'Evening Snack') ? `<button class="btn btn-outline-warning btn-sm mt-2 ms-1 text-dark fw-bold" onclick="removeMealSlot('${slot}')">Remove</button>` : ''}
@@ -613,6 +613,7 @@ function updateQuantity(slot, change) {
     const proDiv = document.getElementById(`pro-display-${slotId}`);
     const carbDiv = document.getElementById(`carb-display-${slotId}`);
     const fatDiv = document.getElementById(`fat-display-${slotId}`);
+    const portionDiv = document.getElementById(`portion-display-${slotId}`);
     
     if(!qtySpan || !calDiv) return;
     
@@ -628,11 +629,13 @@ function updateQuantity(slot, change) {
     let basePro = parseFloat(qtySpan.getAttribute('data-base-pro') || 0);
     let baseCarb = parseFloat(qtySpan.getAttribute('data-base-carb') || 0);
     let baseFat = parseFloat(qtySpan.getAttribute('data-base-fat') || 0);
+    let basePortionText = qtySpan.getAttribute('data-base-portion') || '-';
     
     calDiv.innerHTML = `<strong>Calories:</strong> ${Math.round(baseCal * newQty)} kcal`;
     if(proDiv) proDiv.innerHTML = `<strong>Protein:</strong> ${Math.round(basePro * newQty)} g`;
     if(carbDiv) carbDiv.innerHTML = `<strong>Carbs:</strong> ${Math.round(baseCarb * newQty)} g`;
     if(fatDiv) fatDiv.innerHTML = `<strong>Fat:</strong> ${Math.round(baseFat * newQty)} g`;
+    if(portionDiv) portionDiv.innerHTML = `<strong>Portion:</strong> <span class="text-danger fw-bold">${newQty}x</span> (${basePortionText})`;
     
     calculateTotalPlanCalories();
     autoBalancePlan();
