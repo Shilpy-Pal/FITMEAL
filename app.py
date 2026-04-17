@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 import json
 import os
 import csv
@@ -182,17 +182,24 @@ def login():
         email_value = request.form['email']
         password = request.form['password']
         if validate_login(email_value, password):
+            session['user'] = email_value
             flash("Login Successful! 🎉 Welcome to FitMeal!", "success")
             return redirect(url_for('home'))
         flash("❌ Invalid email or password. Please try again.", "danger")
         return render_template('login.html', email=email_value)
     return render_template('login.html', email=email_value)
 
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    flash("You have been successfully logged out.", "info")
+    return redirect(url_for('login'))
 
 @app.route('/preferences', methods=['GET', 'POST'])
 def preferences():
     if request.method == 'POST':
         data = {
+            "email": session.get('user'),
             "age": request.form.get('age'),
             "height": request.form.get('height'),
             "weight": request.form.get('weight'),
@@ -219,6 +226,34 @@ def preferences():
     return render_template('preferences.html')
 
 
+def calculate_cal_goal(user):
+    if not user:
+        return 2000
+    age = int(float(user.get("age") or 25))
+    height_cm = float(user.get("height") or 160)
+    weight_kg = float(user.get("weight") or 56)
+    gender = user.get("gender", "Female")
+    activity = float(user.get("activity") or 1.2)
+    goal = user.get("goal", "Maintain Weight")
+
+    if gender.lower().startswith("m"):
+        bmr = 10 * weight_kg + 6.25 * height_cm - 5 * age + 5
+    elif gender.lower().startswith("f"):
+        bmr = 10 * weight_kg + 6.25 * height_cm - 5 * age - 161
+    else:
+        bmr = 10 * weight_kg + 6.25 * height_cm - 5 * age
+
+    tdee = bmr * activity
+    if goal == "Lose Weight":
+        cal_goal = tdee - 500
+    elif goal == "Gain Weight":
+        cal_goal = tdee + 500
+    elif goal == "Build Muscle":
+        cal_goal = tdee + 250
+    else:
+        cal_goal = tdee
+    return int(round(cal_goal))
+
 @app.route('/recipes')
 def recipes():
     user = None
@@ -226,8 +261,12 @@ def recipes():
         with open(PREF_FILE, 'r') as f:
             prefs = json.load(f)
             if prefs:
-                user = prefs[-1]
-    return render_template('recipes.html', user=user)
+                user_email = session.get('user')
+                user_prefs = [p for p in prefs if p.get('email') == user_email]
+                user = user_prefs[-1] if user_prefs else prefs[-1]
+    
+    cal_goal = calculate_cal_goal(user)        
+    return render_template('recipes.html', user=user, cal_goal=cal_goal)
 
 
 @app.route("/scan")
@@ -306,6 +345,7 @@ def save_progress():
                 logs = json.load(f)
             except Exception:
                 logs = []
+    data['email'] = session.get('user')
     logs.append(data)
     with open(PROGRESS_FILE, 'w') as f:
         json.dump(logs, f, indent=2)
@@ -314,12 +354,19 @@ def save_progress():
 
 @app.route('/report')
 def report():
+    if 'user' not in session:
+        flash("Please log in to view your report.", "warning")
+        return redirect(url_for('login'))
+
     user = None
     if os.path.exists(PREF_FILE):
         with open(PREF_FILE, 'r') as f:
             prefs = json.load(f)
             if prefs:
-                user = prefs[-1]
+                user_email = session.get('user')
+                user_prefs = [p for p in prefs if p.get('email') == user_email]
+                if user_prefs:
+                    user = user_prefs[-1]
 
     if not user:
         user = {
@@ -336,25 +383,10 @@ def report():
         }
 
     age = int(float(user.get("age") or 25))
-    height_cm = float(user.get("height") or 160)
     weight_kg = float(user.get("weight") or 56)
-    gender = user.get("gender", "Female")
-    activity = float(user.get("activity") or 1.2)
     goal = user.get("goal", "Maintain Weight")
 
-    if gender.lower().startswith("m"):
-        bmr = 88.362 + 13.397 * weight_kg + 4.799 * height_cm - 5.677 * age
-    else:
-        bmr = 447.593 + 9.247 * weight_kg + 3.098 * height_cm - 4.330 * age
-
-    tdee = bmr * activity
-    if "lose" in goal.lower():
-        cal_goal = tdee - 300
-    elif "gain" in goal.lower():
-        cal_goal = tdee + 250
-    else:
-        cal_goal = tdee
-    cal_goal = int(round(cal_goal))
+    cal_goal = calculate_cal_goal(user)
 
     if "lose" in goal.lower() or "build" in goal.lower():
         protein_goal = round(weight_kg * 1.6)
@@ -365,7 +397,8 @@ def report():
     if os.path.exists(PROGRESS_FILE):
         with open(PROGRESS_FILE, 'r') as f:
             try:
-                logs = json.load(f)
+                all_logs = json.load(f)
+                logs = [l for l in all_logs if l.get('email') == session.get('user')]
             except Exception:
                 logs = []
 

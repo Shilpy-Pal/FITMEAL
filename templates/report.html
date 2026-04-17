@@ -105,7 +105,17 @@
           <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold active" href="/report">Report</a></li>
           <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/about">About</a></li>
           <li class="nav-item mx-2"><a class="nav-link text-white fw-semibold" href="/contact">Contact</a></li>
-          <li class="nav-item ms-3"><a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a></li>
+          <li class="nav-item ms-3">
+          {% if session.get('user') %}
+            <a href="/logout" class="btn btn-light text-danger fw-bold px-3 py-1 rounded-pill shadow-sm">Logout</a>
+          {% else %}
+                      {% if session.get('user') %}
+            <a href="/logout" class="btn btn-light text-danger fw-bold px-3 py-1 rounded-pill shadow-sm">Logout</a>
+          {% else %}
+            <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a>
+          {% endif %}
+          {% endif %}
+        </li>
         </ul>
       </div>
     </div>
@@ -115,7 +125,11 @@
     <div class="sidebar-content">
       <h5 class="mb-4 fw-bold">Menu</h5>
       <a href="/home">Home</a><a href="/preferences">Preferences</a><a href="/recipes">Recipes</a><a href="/mealplan">Meal Plan</a><a href="/chat">Chatbot</a><a href="/report">Report</a><a href="/about">About</a><a href="/contact">Contact</a>
-      <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm mt-3">Sign Up</a>
+                {% if session.get('user') %}
+            <a href="/logout" class="btn btn-light text-danger fw-bold px-3 py-1 rounded-pill shadow-sm">Logout</a>
+          {% else %}
+            <a href="/" class="btn btn-light text-success fw-bold px-3 py-1 rounded-pill shadow-sm">Sign Up</a>
+          {% endif %}
     </div>
   </div>
   <div id="overlay"></div>
