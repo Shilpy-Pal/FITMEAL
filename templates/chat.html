@@ -464,13 +464,6 @@
       }
     }
 
-    .secondary-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 16px 0 0;
-    }
-
     .report-shell {
       margin-top: 22px;
       background: rgba(0, 0, 0, 0.2);
@@ -611,7 +604,7 @@
       <p class="chat-subtitle">Say hello, ask for help, or request a full diet plan in English or Hinglish. Meal plans will appear in the planner area instead of cluttering the chat.</p>
 
       <div id="chatOutput">
-        <div class="message bot">Hi! I can chat normally or build a diet plan for you. Try: "make a 3 meal vegetarian plan for weight loss" or just say "hi".</div>
+        <div class="message bot">Hi! Main dietician-style advice de sakta hoon (jaise: "main diabetic hoon kya khaaun?" ya "apple kitne khaaun?") aur full meal plan bhi bana sakta hoon.</div>
       </div>
 
       <div id="chatInputContainer">
@@ -645,11 +638,6 @@
 
       <div id="dieticianReportPreview" class="empty-state" style="margin-top:18px;">
         Dietician-style summary will appear here with compliance notes and macro insights.
-      </div>
-
-      <div class="secondary-actions">
-        <button class="action-btn" id="downloadJsonBtn" onclick="downloadMealPlan('json')" disabled>Download JSON</button>
-        <button class="action-btn" id="downloadTxtBtn" onclick="downloadMealPlan('txt')" disabled>Download TXT</button>
       </div>
     </section>
   </main>
@@ -783,8 +771,6 @@
 
       document.getElementById("downloadReportPdfBtn").disabled = !currentMealPlan.length;
       document.getElementById("downloadReportDocBtn").disabled = !currentMealPlan.length;
-      document.getElementById("downloadJsonBtn").disabled = !currentMealPlan.length;
-      document.getElementById("downloadTxtBtn").disabled = !currentMealPlan.length;
 
       if (!currentMealPlan.length) {
         clearMealPlanPreview("no_plan");
@@ -843,8 +829,6 @@
       currentReport = null;
       document.getElementById("downloadReportPdfBtn").disabled = true;
       document.getElementById("downloadReportDocBtn").disabled = true;
-      document.getElementById("downloadJsonBtn").disabled = true;
-      document.getElementById("downloadTxtBtn").disabled = true;
       document.getElementById("plannerCaption").textContent = "Your meal plan will appear here when you request one.";
       document.getElementById("mealPlanMeta").style.display = "none";
       document.getElementById("mealPlanMeta").innerHTML = "";
@@ -1180,48 +1164,6 @@
         </body>
         </html>
       `;
-    }
-
-    function downloadMealPlan(format) {
-      if (!currentMealPlan.length) return;
-
-      let content = "";
-      let mimeType = "application/json";
-      let extension = "json";
-
-      if (format === "txt") {
-        mimeType = "text/plain";
-        extension = "txt";
-        content = buildTextMealPlan();
-      } else {
-        content = JSON.stringify({meal_plan: currentMealPlan}, null, 2);
-      }
-
-      const blob = new Blob([content], { type: mimeType });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `fitmeal-plan.${extension}`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-    }
-
-    function buildTextMealPlan() {
-      return currentMealPlan.map(item => {
-        const ingredients = normalizeIngredients(item.ingredients).join(", ");
-        const instructions = normalizeInstructions(item.instructions).join(" ");
-        return [
-          `${item.meal || "Meal"}: ${item.title || ""}`,
-          `Calories: ${item.calories || "N/A"}`,
-          `Protein: ${item.protein || "N/A"}`,
-          `Carbs: ${item.carbs || "N/A"}`,
-          `Fat: ${item.fat || "N/A"}`,
-          `Ingredients: ${ingredients}`,
-          `Instructions: ${instructions}`
-        ].join("\n");
-      }).join("\n\n--------------------\n\n");
     }
 
     function setStatus(text) {
