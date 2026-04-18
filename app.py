@@ -28,11 +28,12 @@ chatbot_service = ChatbotService()
 def chatbot():
     payload = request.get_json(silent=True) or {}
     query = (payload.get("query") or "").strip()
+    history = payload.get("history")
     if not query:
         return jsonify({"type": "chat", "message": "Please enter a message.", "meal_plan": []}), 400
 
     try:
-        result = chatbot_service.handle_query(query)
+        result = chatbot_service.handle_query(query, history=history)
         return jsonify(result)
     except ChatbotServiceError as exc:
         print("Chatbot configuration error:", exc)

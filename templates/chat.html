@@ -413,6 +413,126 @@
       margin-top: 12px;
     }
 
+    .quick-prompts {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .quick-btn {
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.18);
+      color: #ffffff;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .typing-dots {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+      min-height: 12px;
+    }
+
+    .typing-dots span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.74);
+      animation: typingPulse 1s infinite ease-in-out;
+    }
+
+    .typing-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typingPulse {
+      0%, 80%, 100% {
+        transform: scale(0.85);
+        opacity: 0.6;
+      }
+      40% {
+        transform: scale(1.08);
+        opacity: 1;
+      }
+    }
+
+    .secondary-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 16px 0 0;
+    }
+
+    .report-shell {
+      margin-top: 22px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 22px;
+      padding: 20px;
+    }
+
+    .report-headline {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .report-title {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .report-meta-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 11px;
+      border-radius: 999px;
+      background: rgba(250,204,21,0.2);
+      color: #fff4bd;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .report-point {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .report-point small {
+      color: rgba(255,255,255,0.72);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .report-list {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: rgba(255,255,255,0.92);
+    }
+
     @media (max-width: 980px) {
       .page-shell {
         grid-template-columns: 1fr;
@@ -496,7 +616,12 @@
 
       <div id="chatInputContainer">
         <input id="chatInput" type="text" placeholder="Type a message or ask for a meal plan..." onkeydown="handleInputKey(event)">
-        <button class="send-btn" onclick="askBot()">Send</button>
+        <button class="send-btn" id="sendBtn" onclick="askBot()">Send</button>
+      </div>
+      <div class="quick-prompts">
+        <button class="quick-btn" type="button" onclick="sendQuickPrompt('Make a 3 meal vegetarian fat loss diet plan around 1600 calories.')">Veg Fat-Loss</button>
+        <button class="quick-btn" type="button" onclick="sendQuickPrompt('Create a 4 meal high protein plan for muscle gain around 2400 calories.')">Muscle Gain</button>
+        <button class="quick-btn" type="button" onclick="sendQuickPrompt('Suggest a diabetic friendly Indian meal plan for one day.')">Diabetic Friendly</button>
       </div>
       <div class="status-chip" id="statusChip"><i class="bi bi-lightning-charge-fill"></i> Ready</div>
     </section>
@@ -508,8 +633,8 @@
           <p id="plannerCaption">Your meal plan will appear here when you request one.</p>
         </div>
         <div class="download-actions">
-          <button class="action-btn primary" id="downloadJsonBtn" onclick="downloadMealPlan('json')" disabled>Download JSON</button>
-          <button class="action-btn" id="downloadTxtBtn" onclick="downloadMealPlan('txt')" disabled>Download TXT</button>
+          <button class="action-btn primary" id="downloadReportPdfBtn" onclick="downloadDieticianReport('pdf')" disabled>Download Dietician PDF</button>
+          <button class="action-btn" id="downloadReportDocBtn" onclick="downloadDieticianReport('doc')" disabled>Download Dietician DOC</button>
         </div>
       </div>
 
@@ -517,12 +642,32 @@
       <div id="mealPlanContainer" class="empty-state">
         Ask for a plan like "vegetarian 1800 calorie meal plan with 4 meals" and I will build it here.
       </div>
+
+      <div id="dieticianReportPreview" class="empty-state" style="margin-top:18px;">
+        Dietician-style summary will appear here with compliance notes and macro insights.
+      </div>
+
+      <div class="secondary-actions">
+        <button class="action-btn" id="downloadJsonBtn" onclick="downloadMealPlan('json')" disabled>Download JSON</button>
+        <button class="action-btn" id="downloadTxtBtn" onclick="downloadMealPlan('txt')" disabled>Download TXT</button>
+      </div>
     </section>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
   <script>
     let currentMealPlan = [];
+    let currentReport = null;
     let lastQuery = "";
+    let activeRequest = false;
+    const chatHistory = [];
+
+    const firstBotMessage = document.querySelector("#chatOutput .message.bot");
+    if (firstBotMessage && firstBotMessage.textContent.trim()) {
+      chatHistory.push({ role: "assistant", content: firstBotMessage.textContent.trim() });
+    }
 
     function handleInputKey(event) {
       if (event.key === "Enter") {
@@ -530,22 +675,40 @@
       }
     }
 
-    function askBot() {
+    function sendQuickPrompt(promptText) {
       const input = document.getElementById("chatInput");
+      input.value = promptText;
+      askBot();
+    }
+
+    async function askBot() {
+      if (activeRequest) return;
+
+      const input = document.getElementById("chatInput");
+      const sendBtn = document.getElementById("sendBtn");
       const query = input.value.trim();
       if (!query) return;
 
+      activeRequest = true;
       lastQuery = query;
       appendMessage("user", query);
+      chatHistory.push({ role: "user", content: query });
       setStatus("Thinking...");
       input.value = "";
+      input.disabled = true;
+      sendBtn.disabled = true;
+      showTypingIndicator();
 
-      fetch("/chatbot", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({query})
-      })
-      .then(async res => {
+      try {
+        const res = await fetch("/chatbot", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            query,
+            history: chatHistory.slice(-9, -1)
+          })
+        });
+
         let data = {};
         try {
           data = await res.json();
@@ -557,21 +720,29 @@
           throw new Error(data.error || "Unable to process this request.");
         }
 
+        hideTypingIndicator();
         const message = data.message || "Done.";
         appendMessage("bot", message);
+        chatHistory.push({ role: "assistant", content: message });
 
         if (data.type === "meal_plan") {
-          renderMealPlan(data.meal_plan || []);
+          renderMealPlan(data.meal_plan || [], data.report || null);
           setStatus("Meal plan ready");
         } else {
-          clearMealPlanPreview();
+          clearMealPlanPreview("regular_chat");
           setStatus("Chat reply ready");
         }
-      })
-      .catch(error => {
+      } catch (error) {
+        hideTypingIndicator();
         appendMessage("bot", error.message || "Something went wrong.");
+        chatHistory.push({ role: "assistant", content: error.message || "Something went wrong." });
         setStatus("Error");
-      });
+      } finally {
+        activeRequest = false;
+        input.disabled = false;
+        sendBtn.disabled = false;
+        input.focus();
+      }
     }
 
     function appendMessage(type, text) {
@@ -583,27 +754,49 @@
       output.scrollTop = output.scrollHeight;
     }
 
-    function renderMealPlan(mealPlan) {
+    function showTypingIndicator() {
+      const output = document.getElementById("chatOutput");
+      if (document.getElementById("typingMessage")) return;
+
+      const div = document.createElement("div");
+      div.className = "message bot";
+      div.id = "typingMessage";
+      div.innerHTML = `<span class="typing-dots" aria-label="Typing"><span></span><span></span><span></span></span>`;
+      output.appendChild(div);
+      output.scrollTop = output.scrollHeight;
+    }
+
+    function hideTypingIndicator() {
+      const typing = document.getElementById("typingMessage");
+      if (typing) typing.remove();
+    }
+
+    function renderMealPlan(mealPlan, reportPayload) {
       currentMealPlan = Array.isArray(mealPlan) ? mealPlan : [];
+      currentReport = reportPayload && typeof reportPayload === "object" ? reportPayload : null;
 
       const meta = document.getElementById("mealPlanMeta");
       const container = document.getElementById("mealPlanContainer");
       const caption = document.getElementById("plannerCaption");
       const totalCalories = currentMealPlan.reduce((sum, item) => sum + readNumber(item.calories), 0);
+      const report = buildDieticianReportModel();
 
+      document.getElementById("downloadReportPdfBtn").disabled = !currentMealPlan.length;
+      document.getElementById("downloadReportDocBtn").disabled = !currentMealPlan.length;
       document.getElementById("downloadJsonBtn").disabled = !currentMealPlan.length;
       document.getElementById("downloadTxtBtn").disabled = !currentMealPlan.length;
 
       if (!currentMealPlan.length) {
-        clearMealPlanPreview();
+        clearMealPlanPreview("no_plan");
         return;
       }
 
-      caption.textContent = "Review the plan below, then download it in the format you prefer.";
+      caption.textContent = "Meal plan generated. Review it below and export your dietician-style report.";
       meta.style.display = "grid";
       meta.innerHTML = `
         <div class="meta-tile"><small>Meals</small><strong>${currentMealPlan.length}</strong></div>
         <div class="meta-tile"><small>Approx Total Calories</small><strong>${totalCalories || "N/A"}</strong></div>
+        <div class="meta-tile"><small>Goal Focus</small><strong>${escapeHtml(report.goalFocus)}</strong></div>
         <div class="meta-tile"><small>Last Request</small><strong>${escapeHtml(lastQuery)}</strong></div>
       `;
 
@@ -641,10 +834,15 @@
           </article>
         `;
       }).join("");
+
+      renderDieticianReport(report);
     }
 
-    function clearMealPlanPreview() {
+    function clearMealPlanPreview(reason = "regular_chat") {
       currentMealPlan = [];
+      currentReport = null;
+      document.getElementById("downloadReportPdfBtn").disabled = true;
+      document.getElementById("downloadReportDocBtn").disabled = true;
       document.getElementById("downloadJsonBtn").disabled = true;
       document.getElementById("downloadTxtBtn").disabled = true;
       document.getElementById("plannerCaption").textContent = "Your meal plan will appear here when you request one.";
@@ -652,7 +850,13 @@
       document.getElementById("mealPlanMeta").innerHTML = "";
       const container = document.getElementById("mealPlanContainer");
       container.className = "empty-state";
-      container.textContent = "This message was regular chat, so no meal plan was generated.";
+      container.textContent = reason === "no_plan"
+        ? "I could not generate a plan for this query. Try adding goal, calories, and diet preference."
+        : "This was a regular chat response, so no meal plan was generated.";
+
+      const reportPreview = document.getElementById("dieticianReportPreview");
+      reportPreview.className = "empty-state";
+      reportPreview.innerHTML = "Dietician-style summary will appear here with compliance notes and macro insights.";
     }
 
     function normalizeIngredients(value) {
@@ -681,6 +885,301 @@
     function readNumber(value) {
       const match = String(value || "").match(/[\d.]+/);
       return match ? Number(match[0]) : 0;
+    }
+
+    function deriveGoalFromQuery(queryText) {
+      const text = String(queryText || "").toLowerCase();
+      if (["weight loss", "fat loss", "lose", "cut"].some(word => text.includes(word))) {
+        return "Weight Loss";
+      }
+      if (["gain", "muscle", "bulk", "build"].some(word => text.includes(word))) {
+        return "Muscle Gain";
+      }
+      if (["diabetes", "sugar", "pcos", "thyroid", "bp"].some(word => text.includes(word))) {
+        return "Condition Support";
+      }
+      return "Balanced Nutrition";
+    }
+
+    function deriveDietType(queryText) {
+      const text = String(queryText || "").toLowerCase();
+      if (["non veg", "non-veg", "chicken", "fish", "egg", "mutton"].some(word => text.includes(word))) {
+        return "Non Vegetarian";
+      }
+      if (["vegetarian", "veg", "satvik", "paneer", "dal"].some(word => text.includes(word))) {
+        return "Vegetarian";
+      }
+      return "Mixed/Any";
+    }
+
+    function buildDieticianReportModel() {
+      const totalCalories = Math.round(currentMealPlan.reduce((sum, meal) => sum + readNumber(meal.calories), 0));
+      const totalProtein = currentMealPlan.reduce((sum, meal) => sum + readNumber(meal.protein), 0);
+      const totalCarbs = currentMealPlan.reduce((sum, meal) => sum + readNumber(meal.carbs), 0);
+      const totalFat = currentMealPlan.reduce((sum, meal) => sum + readNumber(meal.fat), 0);
+
+      const kcalFromMacros = Math.max((totalProtein * 4) + (totalCarbs * 4) + (totalFat * 9), 1);
+      const defaultMacroSplit = {
+        protein_pct: Math.round((totalProtein * 4 / kcalFromMacros) * 100),
+        carbs_pct: Math.round((totalCarbs * 4 / kcalFromMacros) * 100),
+        fat_pct: Math.round((totalFat * 9 / kcalFromMacros) * 100)
+      };
+
+      const targetCalories = readNumber(currentReport && currentReport.daily_target_calories);
+      const goalFocus = (currentReport && currentReport.goal_focus) || deriveGoalFromQuery(lastQuery);
+      const dietType = (currentReport && currentReport.diet_type) || deriveDietType(lastQuery);
+      const hydrationTarget = (currentReport && currentReport.hydration_target) || (totalCalories >= 2200 ? "2.5-3.5 L/day" : "2.0-3.0 L/day");
+      const macroSplit = (currentReport && currentReport.macro_split) || defaultMacroSplit;
+      const recommendations = Array.isArray(currentReport && currentReport.recommendations) && currentReport.recommendations.length
+        ? currentReport.recommendations
+        : [
+            "Maintain consistent meal timings and avoid long fasting gaps.",
+            "Prioritize protein in each major meal for better appetite control.",
+            "Add raw salad or cooked vegetables in at least two meals daily.",
+            `Hydration target: ${hydrationTarget}.`
+          ];
+
+      const generatedOn = (currentReport && currentReport.generated_on) || new Date().toLocaleString();
+      const noteText = (currentReport && currentReport.notes)
+        || "This report is educational guidance and should be personalized by a licensed dietitian for medical conditions.";
+
+      return {
+        generatedOn,
+        goalFocus,
+        dietType,
+        targetCalories: targetCalories || totalCalories,
+        totalCalories: (currentReport && readNumber(currentReport.total_calories)) || totalCalories,
+        calorieGap: (currentReport && Number(currentReport.calorie_gap)) || (targetCalories ? (totalCalories - targetCalories) : 0),
+        totalProtein,
+        totalCarbs,
+        totalFat,
+        macroSplit,
+        hydrationTarget,
+        recommendations,
+        notes: noteText,
+        meals: currentMealPlan.slice(),
+      };
+    }
+
+    function renderDieticianReport(report) {
+      const reportPreview = document.getElementById("dieticianReportPreview");
+      if (!report || !report.meals || !report.meals.length) {
+        reportPreview.className = "empty-state";
+        reportPreview.innerHTML = "Dietician-style summary will appear here with compliance notes and macro insights.";
+        return;
+      }
+
+      reportPreview.className = "report-shell";
+      reportPreview.innerHTML = `
+        <div class="report-headline">
+          <div>
+            <h3 class="report-title">Dietician Nutrition Summary</h3>
+            <div style="color:rgba(255,255,255,0.84); font-size:0.92rem;">Generated on ${escapeHtml(report.generatedOn)}</div>
+          </div>
+          <span class="report-meta-chip">${escapeHtml(report.goalFocus)}</span>
+        </div>
+        <div class="report-grid">
+          <div class="report-point"><small>Diet Type</small><strong>${escapeHtml(report.dietType)}</strong></div>
+          <div class="report-point"><small>Target Calories</small><strong>${escapeHtml(Math.round(report.targetCalories) || "N/A")}</strong></div>
+          <div class="report-point"><small>Planned Calories</small><strong>${escapeHtml(Math.round(report.totalCalories) || "N/A")}</strong></div>
+          <div class="report-point"><small>Calorie Gap</small><strong>${escapeHtml(report.calorieGap > 0 ? `+${Math.round(report.calorieGap)}` : Math.round(report.calorieGap))}</strong></div>
+          <div class="report-point"><small>Protein</small><strong>${escapeHtml(report.totalProtein.toFixed(1))} g</strong></div>
+          <div class="report-point"><small>Carbs</small><strong>${escapeHtml(report.totalCarbs.toFixed(1))} g</strong></div>
+          <div class="report-point"><small>Fat</small><strong>${escapeHtml(report.totalFat.toFixed(1))} g</strong></div>
+          <div class="report-point"><small>Hydration</small><strong>${escapeHtml(report.hydrationTarget)}</strong></div>
+          <div class="report-point"><small>Macro Split</small><strong>P ${escapeHtml(report.macroSplit.protein_pct)}% / C ${escapeHtml(report.macroSplit.carbs_pct)}% / F ${escapeHtml(report.macroSplit.fat_pct)}%</strong></div>
+        </div>
+        <div class="section-title">Dietician Recommendations</div>
+        <ul class="report-list">
+          ${(report.recommendations || []).map(item => `<li>${escapeHtml(item)}</li>`).join("")}
+        </ul>
+        <div style="margin-top:12px; color:rgba(255,255,255,0.8); font-size:0.85rem;">${escapeHtml(report.notes)}</div>
+      `;
+    }
+
+    function downloadDieticianReport(format) {
+      if (!currentMealPlan.length) return;
+      const report = buildDieticianReportModel();
+
+      if (format === "pdf") {
+        downloadDieticianPDF(report);
+      } else {
+        downloadDieticianDOC(report);
+      }
+    }
+
+    function downloadDieticianPDF(report) {
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        downloadDieticianDOC(report);
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: "pt", format: "a4" });
+      const left = 42;
+      let y = 46;
+      const safeDate = new Date().toISOString().slice(0, 10);
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(18);
+      doc.text("FitMeal Dietician Report", left, y);
+
+      y += 20;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10.5);
+      doc.text(`Generated: ${report.generatedOn}`, left, y);
+      y += 15;
+      doc.text(`Goal Focus: ${report.goalFocus} | Diet Type: ${report.dietType}`, left, y);
+
+      const summaryRows = [
+        ["Target Calories", `${Math.round(report.targetCalories)}`],
+        ["Planned Calories", `${Math.round(report.totalCalories)}`],
+        ["Calorie Gap", `${report.calorieGap > 0 ? "+" : ""}${Math.round(report.calorieGap)}`],
+        ["Protein (g)", report.totalProtein.toFixed(1)],
+        ["Carbs (g)", report.totalCarbs.toFixed(1)],
+        ["Fat (g)", report.totalFat.toFixed(1)],
+        ["Macro Split", `P ${report.macroSplit.protein_pct}% / C ${report.macroSplit.carbs_pct}% / F ${report.macroSplit.fat_pct}%`],
+        ["Hydration", report.hydrationTarget],
+      ];
+
+      if (typeof doc.autoTable === "function") {
+        doc.autoTable({
+          startY: y + 16,
+          head: [["Metric", "Value"]],
+          body: summaryRows,
+          theme: "grid",
+          headStyles: { fillColor: [24, 118, 110] },
+          styles: { fontSize: 10, cellPadding: 6 }
+        });
+
+        const mealRows = report.meals.map(item => [
+          `${item.meal || "Meal"} - ${item.title || ""}`,
+          `${item.calories || "N/A"}`,
+          `${item.protein || "N/A"}`,
+          `${item.carbs || "N/A"}`,
+          `${item.fat || "N/A"}`
+        ]);
+
+        doc.autoTable({
+          startY: doc.lastAutoTable.finalY + 16,
+          head: [["Meal", "Calories", "Protein", "Carbs", "Fat"]],
+          body: mealRows,
+          theme: "striped",
+          headStyles: { fillColor: [19, 78, 74] },
+          styles: { fontSize: 9.5, cellPadding: 5 }
+        });
+
+        y = doc.lastAutoTable.finalY + 20;
+      } else {
+        y += 28;
+        summaryRows.forEach(row => {
+          doc.text(`${row[0]}: ${row[1]}`, left, y);
+          y += 14;
+        });
+        y += 8;
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Recommendations", left, y);
+      doc.setFont("helvetica", "normal");
+      y += 14;
+
+      const recText = (report.recommendations || []).map((r, idx) => `${idx + 1}. ${r}`).join("  ");
+      const recLines = doc.splitTextToSize(recText, 505);
+      doc.text(recLines, left, y);
+      y += (recLines.length * 12) + 10;
+
+      const noteLines = doc.splitTextToSize(`Note: ${report.notes}`, 505);
+      doc.text(noteLines, left, y);
+      doc.save(`fitmeal-dietician-report-${safeDate}.pdf`);
+      setStatus("Dietician PDF downloaded");
+    }
+
+    function downloadDieticianDOC(report) {
+      const safeDate = new Date().toISOString().slice(0, 10);
+      const html = buildDieticianDocumentHtml(report);
+      const blob = new Blob(["\ufeff", html], { type: "application/msword;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `fitmeal-dietician-report-${safeDate}.doc`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setStatus("Dietician report downloaded");
+    }
+
+    function buildDieticianDocumentHtml(report) {
+      const mealRows = (report.meals || []).map(item => `
+        <tr>
+          <td>${escapeHtml(item.meal || "Meal")}</td>
+          <td>${escapeHtml(item.title || "")}</td>
+          <td>${escapeHtml(item.calories || "N/A")}</td>
+          <td>${escapeHtml(item.protein || "N/A")}</td>
+          <td>${escapeHtml(item.carbs || "N/A")}</td>
+          <td>${escapeHtml(item.fat || "N/A")}</td>
+        </tr>
+      `).join("");
+
+      const recommendationItems = (report.recommendations || [])
+        .map(item => `<li>${escapeHtml(item)}</li>`)
+        .join("");
+
+      return `
+        <!doctype html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>FitMeal Dietician Report</title>
+          <style>
+            body { font-family: Arial, sans-serif; color: #1f2937; margin: 24px; }
+            h1 { margin: 0 0 10px; color: #0f766e; }
+            h2 { margin: 20px 0 8px; color: #134e4a; }
+            .meta { margin-bottom: 12px; font-size: 14px; }
+            .summary { border: 1px solid #cbd5e1; border-radius: 10px; padding: 14px; background: #f8fafc; }
+            .grid { width: 100%; border-collapse: collapse; margin-top: 8px; }
+            .grid th, .grid td { border: 1px solid #d1d5db; padding: 8px; text-align: left; font-size: 13px; }
+            .grid th { background: #dcfce7; }
+            ul { margin-top: 8px; }
+            .note { margin-top: 14px; color: #374151; font-size: 13px; }
+          </style>
+        </head>
+        <body>
+          <h1>FitMeal Dietician Report</h1>
+          <div class="meta">Generated: ${escapeHtml(report.generatedOn)}</div>
+          <div class="summary">
+            <div><strong>Goal Focus:</strong> ${escapeHtml(report.goalFocus)}</div>
+            <div><strong>Diet Type:</strong> ${escapeHtml(report.dietType)}</div>
+            <div><strong>Target Calories:</strong> ${escapeHtml(Math.round(report.targetCalories))}</div>
+            <div><strong>Planned Calories:</strong> ${escapeHtml(Math.round(report.totalCalories))}</div>
+            <div><strong>Calorie Gap:</strong> ${escapeHtml(report.calorieGap > 0 ? `+${Math.round(report.calorieGap)}` : Math.round(report.calorieGap))}</div>
+            <div><strong>Macros:</strong> Protein ${escapeHtml(report.totalProtein.toFixed(1))} g, Carbs ${escapeHtml(report.totalCarbs.toFixed(1))} g, Fat ${escapeHtml(report.totalFat.toFixed(1))} g</div>
+            <div><strong>Macro Split:</strong> P ${escapeHtml(report.macroSplit.protein_pct)}% / C ${escapeHtml(report.macroSplit.carbs_pct)}% / F ${escapeHtml(report.macroSplit.fat_pct)}%</div>
+            <div><strong>Hydration:</strong> ${escapeHtml(report.hydrationTarget)}</div>
+          </div>
+
+          <h2>Meal Plan Table</h2>
+          <table class="grid">
+            <thead>
+              <tr>
+                <th>Meal</th>
+                <th>Dish</th>
+                <th>Calories</th>
+                <th>Protein</th>
+                <th>Carbs</th>
+                <th>Fat</th>
+              </tr>
+            </thead>
+            <tbody>${mealRows}</tbody>
+          </table>
+
+          <h2>Dietician Recommendations</h2>
+          <ul>${recommendationItems}</ul>
+          <div class="note"><strong>Note:</strong> ${escapeHtml(report.notes)}</div>
+        </body>
+        </html>
+      `;
     }
 
     function downloadMealPlan(format) {
@@ -743,8 +1242,8 @@
 
     navLinks.forEach(link => {
       link.addEventListener('click', () => {
-        if (navbarCollapse && navbarCollapse.classList.contains('show')) {
-          new bootstrap.Collapse(navbarCollapse).hide();
+        if (window.bootstrap && navbarCollapse && navbarCollapse.classList.contains('show')) {
+          new window.bootstrap.Collapse(navbarCollapse).hide();
         }
       });
     });

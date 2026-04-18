@@ -4,6 +4,7 @@ import json
 import requests
 from typing import Any
 from html import unescape
+from datetime import datetime
 class ChatbotServiceError(Exception):
     """Raised when the chatbot service cannot be initialized."""
 
@@ -21,31 +22,31 @@ class ChatbotService:
         self.timeout = int(os.getenv("CHATBOT_HTTP_TIMEOUT", "45"))
         self.session = requests.Session()
 
-    def handle_query(self, query: str) -> dict[str, Any]:
+    def handle_query(self, query: str, history: list[dict[str, Any]] | None = None) -> dict[str, Any]:
         normalized_query = query.strip()
         if not normalized_query:
             return {"type": "chat", "message": "Please type a message so I can help.", "meal_plan": []}
 
+        chat_history = self._sanitize_history(history)
         classification = self._classify_query(normalized_query)
 
         if classification != "food":
             return {
                 "type": "chat",
-                "message": self._generate_chat_reply(normalized_query),
+                "message": self._generate_chat_reply(normalized_query, chat_history),
                 "meal_plan": [],
             }
 
-        meal_plan = self.build_meal_plan(normalized_query)
+        meal_plan, preferences = self.build_meal_plan(normalized_query)
+        report_snapshot = self._build_report_snapshot(normalized_query, meal_plan, preferences)
         return {
             "type": "meal_plan",
-            "message": "Your meal plan is ready. Preview it below or download it.",
+            "message": "Your meal plan is ready. Preview it below or download your dietician-style report.",
             "meal_plan": meal_plan,
+            "report": report_snapshot,
         }
 
-    def build_meal_plan(self, query: str) -> list[dict[str, Any]]:
-        if not self.hf_api_key:
-            raise ChatbotServiceError("Missing HUGGINGFACE_API_KEY environment variable.")
-
+    def build_meal_plan(self, query: str) -> tuple[list[dict[str, Any]], dict[str, Any]]:
         try:
             preferences = self._extract_preferences(query)
         except Exception:
@@ -87,7 +88,8 @@ class ChatbotService:
                 fallback_meals = self._basic_fallback(preferences)
             meal_plan.extend(fallback_meals[len(meal_plan):meals])
 
-        return meal_plan[:meals]
+        final_plan = meal_plan[:meals]
+        return final_plan, preferences
 
     def _basic_preferences(self, query: str) -> dict[str, Any]:
         meals = self._safe_int(re.search(r"(\d)\s*(?:meals|meal)", query, re.IGNORECASE).group(1)) if re.search(r"(\d)\s*(?:meals|meal)", query, re.IGNORECASE) else 3
@@ -103,6 +105,9 @@ class ChatbotService:
         }
 
     def _extract_preferences(self, query: str) -> dict[str, Any]:
+        if not self.hf_api_key:
+            return self._basic_preferences(query)
+
         prompt = (
             "You are a nutrition extraction assistant. "
             "Understand Hinglish, English, Hindi transliteration, and spelling mistakes. "
@@ -184,6 +189,9 @@ class ChatbotService:
         return meal_plan
 
     def _generate_fallback_meals(self, query: str, preferences: dict[str, Any]) -> list[dict[str, Any]]:
+        if not self.hf_api_key:
+            return self._basic_fallback(preferences)
+
         meals = preferences["meals"]
         prompt = (
             "You are a meal planning assistant. "
@@ -222,6 +230,9 @@ class ChatbotService:
         return self._basic_fallback(preferences)
 
     def _call_huggingface_json(self, prompt: str) -> dict[str, Any]:
+        if not self.hf_api_key:
+            raise ChatbotServiceError("Missing HUGGINGFACE_API_KEY environment variable.")
+
         headers = {
             "Authorization": f"Bearer {self.hf_api_key}",
             "Content-Type": "application/json",
@@ -241,19 +252,36 @@ class ChatbotService:
         content = data["choices"][0]["message"]["content"]
         return self._extract_json_object(content)
 
-    def _call_huggingface_text(self, prompt: str, system_prompt: str) -> str:
+    def _call_huggingface_text(
+        self,
+        prompt: str,
+        system_prompt: str,
+        history: list[dict[str, str]] | None = None,
+        max_tokens: int = 320,
+    ) -> str:
+        if not self.hf_api_key:
+            raise ChatbotServiceError("Missing HUGGINGFACE_API_KEY environment variable.")
+
+        messages: list[dict[str, str]] = [{"role": "system", "content": system_prompt}]
+        for entry in history or []:
+            role = entry.get("role", "")
+            content = entry.get("content", "")
+            if role not in {"user", "assistant"}:
+                continue
+            if not content:
+                continue
+            messages.append({"role": role, "content": content})
+        messages.append({"role": "user", "content": prompt})
+
         headers = {
             "Authorization": f"Bearer {self.hf_api_key}",
             "Content-Type": "application/json",
         }
         payload = {
             "model": self.hf_model,
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": prompt},
-            ],
+            "messages": messages,
             "temperature": 0.4,
-            "max_tokens": 180,
+            "max_tokens": max_tokens,
         }
 
         response = self.session.post(self.hf_api_url, headers=headers, json=payload, timeout=self.timeout)
@@ -427,26 +455,33 @@ class ChatbotService:
 
         return food_keyword_hits >= 2 or (food_keyword_hits >= 1 and number_hits >= 1)
 
-    def _generate_chat_reply(self, query: str) -> str:
+    def _generate_chat_reply(self, query: str, history: list[dict[str, str]] | None = None) -> str:
         if not self.hf_api_key:
-            return "Hi! I can chat with you normally and also help with meal plans whenever you want."
+            return self._local_general_reply(query)
 
         prompt = (
-            "Reply naturally to the user's message. "
-            "You are a friendly general-purpose AI assistant inside a Flask web app. "
-            "You can answer everyday questions, explain concepts, chat casually, and help with food or meal planning when asked. "
-            "For this message, do not generate a meal plan unless the user explicitly asks for one. "
-            "Keep the tone helpful, human, and conversational. "
-            "You may answer in English or Hinglish depending on the user's style.\n"
-            f"User: {query}"
+            "Answer the user's question clearly and accurately. "
+            "You are a strong general-purpose AI assistant inside a fitness app, but you are not restricted to food topics. "
+            "If the user asks non-food topics, answer directly and helpfully. "
+            "If the user asks health or nutrition guidance, include practical and safe advice and avoid diagnosis claims. "
+            "Use English or Hinglish matching the user style. "
+            "Keep formatting simple plain text.\n"
+            f"User message: {query}"
         )
         try:
             return self._call_huggingface_text(
                 prompt,
-                "You are a friendly, general AI assistant. Reply in plain text only. Be natural and useful.",
+                (
+                    "You are a knowledgeable, friendly assistant. "
+                    "Be concise but complete. "
+                    "If confidence is low, mention uncertainty briefly. "
+                    "Never output markdown code fences."
+                ),
+                history=history,
+                max_tokens=420,
             )
         except Exception:
-            return "Main aapke general questions ka bhi answer de sakta hoon, aur agar chaho to meal plan bhi bana sakta hoon."
+            return self._local_general_reply(query)
 
     def _basic_fallback(self, preferences: dict[str, Any]) -> list[dict[str, Any]]:
         labels = self._meal_labels(preferences["meals"])
@@ -498,6 +533,133 @@ class ChatbotService:
             return int(float(value))
         except (TypeError, ValueError):
             return None
+
+    def _safe_float(self, value: Any) -> float:
+        if value is None or value == "":
+            return 0.0
+        match = re.search(r"-?\d+(?:\.\d+)?", str(value))
+        if not match:
+            return 0.0
+        try:
+            return float(match.group(0))
+        except (TypeError, ValueError):
+            return 0.0
+
+    def _sanitize_history(self, history: Any) -> list[dict[str, str]]:
+        if not isinstance(history, list):
+            return []
+
+        cleaned: list[dict[str, str]] = []
+        for item in history[-10:]:
+            if not isinstance(item, dict):
+                continue
+
+            role_raw = str(item.get("role", "")).strip().lower()
+            if role_raw in {"assistant", "bot"}:
+                role = "assistant"
+            elif role_raw == "user":
+                role = "user"
+            else:
+                continue
+
+            content = str(item.get("content") or item.get("text") or "").strip()
+            if not content:
+                continue
+
+            cleaned.append({"role": role, "content": content[:1200]})
+
+        return cleaned
+
+    def _extract_goal_focus(self, query: str) -> str:
+        text = query.lower()
+        if any(word in text for word in ["weight loss", "lose", "fat loss", "cut"]):
+            return "Weight Loss"
+        if any(word in text for word in ["gain", "bulk", "muscle", "build"]):
+            return "Muscle Gain"
+        if any(word in text for word in ["diabetes", "sugar", "pcos", "thyroid", "bp"]):
+            return "Condition Support"
+        return "Balanced Nutrition"
+
+    def _build_report_snapshot(
+        self,
+        query: str,
+        meal_plan: list[dict[str, Any]],
+        preferences: dict[str, Any],
+    ) -> dict[str, Any]:
+        total_calories = round(sum(self._safe_float(item.get("calories")) for item in meal_plan))
+        total_protein = round(sum(self._safe_float(item.get("protein")) for item in meal_plan), 1)
+        total_carbs = round(sum(self._safe_float(item.get("carbs")) for item in meal_plan), 1)
+        total_fat = round(sum(self._safe_float(item.get("fat")) for item in meal_plan), 1)
+
+        calories_from_macros = max((total_protein * 4) + (total_carbs * 4) + (total_fat * 9), 1)
+        protein_pct = round((total_protein * 4 / calories_from_macros) * 100)
+        carbs_pct = round((total_carbs * 4 / calories_from_macros) * 100)
+        fat_pct = round((total_fat * 9 / calories_from_macros) * 100)
+
+        target_calories = int(preferences.get("calories") or 0)
+        calorie_delta = total_calories - target_calories if target_calories else 0
+        hydration_target = "2.5-3.5 L/day" if target_calories >= 2200 else "2.0-3.0 L/day"
+        goal_focus = self._extract_goal_focus(query)
+        diet_label = str(preferences.get("diet_type") or "any").replace("-", " ").title()
+        meals_count = len(meal_plan)
+
+        recommendations = [
+            f"Keep meal timings consistent across your {meals_count}-meal structure.",
+            "Aim for at least 25-35 g protein per major meal for better satiety and recovery.",
+            "Use minimally processed foods and include colorful vegetables twice daily.",
+            f"Hydration target: {hydration_target}.",
+        ]
+        if calorie_delta and abs(calorie_delta) > 220:
+            if calorie_delta > 0:
+                recommendations.append("Portion sizes appear calorie-dense. Slightly reduce oils and refined carbs.")
+            else:
+                recommendations.append("Calories are below target. Add one dense snack with protein and healthy fats.")
+
+        return {
+            "generated_on": datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"),
+            "goal_focus": goal_focus,
+            "diet_type": diet_label,
+            "requested_meals": int(preferences.get("meals") or meals_count or 0),
+            "daily_target_calories": target_calories,
+            "total_calories": total_calories,
+            "calorie_gap": calorie_delta,
+            "total_protein_g": total_protein,
+            "total_carbs_g": total_carbs,
+            "total_fat_g": total_fat,
+            "macro_split": {
+                "protein_pct": protein_pct,
+                "carbs_pct": carbs_pct,
+                "fat_pct": fat_pct,
+            },
+            "hydration_target": hydration_target,
+            "recommendations": recommendations[:6],
+            "notes": (
+                "This plan is educational and should be personalized for medical conditions, allergies, "
+                "medications, and lab values with a licensed dietitian."
+            ),
+        }
+
+    def _local_general_reply(self, query: str) -> str:
+        text = query.lower().strip()
+        if not text:
+            return "Please type your question and I will help."
+
+        if any(phrase in text for phrase in ["who are you", "what can you do"]):
+            return (
+                "I can answer general questions, explain topics clearly, and also generate structured diet meal plans. "
+                "For meal plans, mention calories, goal, diet type, and meals per day."
+            )
+
+        if any(word in text for word in ["diet", "meal", "nutrition", "protein", "calorie"]):
+            return (
+                "I can generate a detailed meal plan for you. Try: "
+                "\"Make a 4 meal vegetarian 1800 calorie plan for fat loss\"."
+            )
+
+        return (
+            "I can help with general questions too. Ask anything directly, and for nutrition requests "
+            "I will generate a full meal plan with report-style download options."
+        )
 
     def _clean_text(self, value: str) -> str:
         if not value:
